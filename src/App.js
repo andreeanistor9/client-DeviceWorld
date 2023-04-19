@@ -5,6 +5,7 @@ import Header from "./Components/Fragments/Header";
 import Home from "./Pages/Home";
 import Brands from "./Pages/Brands";
 import Products from "./Pages/Products";
+import Product from "./Pages/Product";
 import Promotions from "./Pages/Promotions";
 import Support from "./Pages/Support";
 import Wishlist from "./Pages/Wishlist";
@@ -12,6 +13,7 @@ import Cart from "./Pages/Cart";
 import Account from "./Pages/Account";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
+import Users from "./Pages/Users";
 function App() {
   return (
     <Router>
@@ -28,8 +30,10 @@ function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/product" element={<Product />} />
       </Routes>
-     
+
       <Footer />
     </Router>
   );

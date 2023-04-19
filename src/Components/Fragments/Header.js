@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  AppBar,
   Toolbar,
   Typography,
   Stack,
@@ -22,9 +21,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { StyledIconButton, Navbar, StyledLink } from "../StyledComponents";
+import LanguageSelector from "../LanguageSelector";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const Header = () => {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [accountEl, setAccountEl] = useState(null);
@@ -39,8 +41,8 @@ const Header = () => {
     setAnchorElNav(event.currentTarget);
   };
   const handleClickAccount = (event) => {
-    setAccountEl(event.currentTarget)
-  }
+    setAccountEl(event.currentTarget);
+  };
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -54,15 +56,14 @@ const Header = () => {
     setSearchedEl(event.currentTarget.value);
   };
 
-
   return (
     <Navbar position="static">
       <Toolbar sx={{ backgroundColor: "#ffffff", color: "black" }}>
         <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
           <Grid container spacing={1}>
-            <Grid xs={8}>
+            <Grid xs={7}>
               <StyledIconButton
-              disableRipple
+                disableRipple
                 size="large"
                 onClick={handleClickNav}
                 color="inherit"
@@ -98,18 +99,18 @@ const Header = () => {
                     endIcon={<KeyboardArrowRightIcon />}
                   >
                     <Link href="/products" color="inherit" underline="none">
-                      Products
+                      {t("products")}
                     </Link>
                   </Button>
 
                   <Button color="inherit">
                     <Link href="/brands" color="inherit" underline="none">
-                      Brands
+                      {t("brands")}
                     </Link>
                   </Button>
                   <Button color="inherit">
                     <Link href="/support" color="inherit" underline="none">
-                      Support
+                      {t("support")}
                     </Link>
                   </Button>
                 </Stack>
@@ -138,7 +139,7 @@ const Header = () => {
                       color="inherit"
                       underline="none"
                     >
-                      Phones
+                      {t("phones")}
                     </Link>
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
@@ -147,7 +148,7 @@ const Header = () => {
                       color="inherit"
                       underline="none"
                     >
-                      Laptops
+                      {t("laptops")}
                     </Link>
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
@@ -156,7 +157,7 @@ const Header = () => {
                       color="inherit"
                       underline="none"
                     >
-                      Tablets
+                      {t("tablets")}
                     </Link>
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
@@ -165,13 +166,18 @@ const Header = () => {
                       color="inherit"
                       underline="none"
                     >
-                      Accessories
+                      {t("accessories")}
                     </Link>
                   </MenuItem>
                 </Menu>
               </Menu>
 
-              <StyledIconButton disableRipple size="large" edge="start" aria-label="logo">
+              <StyledIconButton
+                disableRipple
+                size="large"
+                edge="start"
+                aria-label="logo"
+              >
                 <DevicesIcon fontSize="inherit" />
                 <StyledLink href="/" underline="none">
                   <Typography
@@ -185,33 +191,89 @@ const Header = () => {
                       color: "#22559c",
                     }}
                   >
-                    ACN-Electronix
+                    DeviceWorld
                   </Typography>
                 </StyledLink>
               </StyledIconButton>
             </Grid>
-            <Grid xs={4} container justifyContent="flex-end" spacing={1}>
-              <StyledIconButton disableRipple size="large" edge="end" aria-label="logo">
+
+            <Grid xs={5} container justifyContent="flex-end" spacing={1}>
+              <StyledIconButton
+                disableRipple
+                size="large"
+                edge="end"
+                aria-label="wishlist"
+              >
                 <StyledLink href="/wishlist" underline="none">
                   <FavoriteBorderIcon fontSize="inherit" />
                 </StyledLink>
               </StyledIconButton>
-              <StyledIconButton disableRipple size="large" edge="end" aria-label="cart">
+              <StyledIconButton
+                disableRipple
+                size="large"
+                edge="end"
+                aria-label="cart"
+              >
                 <StyledLink href="/cart" underline="none">
                   <ShoppingCartOutlinedIcon fontSize="inherit" />
                 </StyledLink>
               </StyledIconButton>
-              <StyledIconButton disableRipple size="large" edge="end" aria-label="account">
-                <StyledLink href="/account" underline="none">
-                  <AccountCircleOutlinedIcon fontSize="inherit" />
-                </StyledLink>
+
+              <StyledIconButton
+                disableRipple
+                size="large"
+                edge="end"
+                aria-label="account"
+                onClick={handleClickAccount}
+                aria-haspopup="true"
+                aria-expanded={Boolean(accountEl) ? "true" : undefined}
+                sx={{ mt: 1 }}
+              >
+                <AccountCircleOutlinedIcon fontSize="inherit" />
+
+                <Menu
+                  id="account-menu"
+                  anchorEl={accountEl}
+                  open={Boolean(accountEl)}
+                  MenuListProps={{ "aria-labelledby": "account-button" }}
+                  onClose={handleCloseAcc}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  sx={{ display: { xs: "flex", md: "none" } }}
+                >
+                  <MenuItem>
+                    <Link href="/login" color="inherit" underline="none">
+                      {t("login")}
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link href="/signup" color="inherit" underline="none">
+                      {t("signup")}
+                    </Link>
+                  </MenuItem>
+                </Menu>
+              </StyledIconButton>
+
+              <StyledIconButton
+                disableRipple
+                size="large"
+                edge="end"
+                aria-label="account"
+              >
+                <LanguageSelector />
               </StyledIconButton>
             </Grid>
             <Grid item xs={12}>
               <TextField
                 id="search"
                 type="search"
-                label="Search"
+                label={t("search")}
                 value={searchedEl}
                 onChange={handleSearch}
                 sx={{ width: "100%", mb: 1 }}
@@ -232,7 +294,12 @@ const Header = () => {
             <Grid item xs={1}></Grid>
             <Grid item xs={10} sx={{ flexGrow: 1 }}>
               <Stack direction="row">
-                <StyledIconButton disableRipple size="large" edge="start" aria-label="logo">
+                <StyledIconButton
+                  disableRipple
+                  size="large"
+                  edge="start"
+                  aria-label="logo"
+                >
                   <DevicesIcon fontSize="inherit" />
                   <StyledLink href="/" underline="none">
                     <Typography
@@ -246,14 +313,14 @@ const Header = () => {
                         color: "#22559c",
                       }}
                     >
-                      ACN-Electronix
+                      DeviceWorld
                     </Typography>
                   </StyledLink>
                 </StyledIconButton>
                 <TextField
                   id="search"
                   type="search"
-                  label="Search"
+                  label={t("search")}
                   value={searchedEl}
                   onChange={handleSearch}
                   sx={{ flexGrow: 1, width: "100%", m: 3 }}
@@ -267,14 +334,14 @@ const Header = () => {
                 ></TextField>
 
                 <StyledIconButton
-                disableRipple
+                  disableRipple
                   size="large"
                   aria-label="wishlist"
                   sx={{ flexGrow: 1 }}
                 >
                   <FavoriteBorderIcon />
                   <StyledLink href="/wishlist" underline="none">
-                    <Typography variant="body1"> Wishlist</Typography>
+                    <Typography variant="body1"> {t("wishlist")}</Typography>
                   </StyledLink>
                 </StyledIconButton>
                 <StyledIconButton
@@ -285,29 +352,27 @@ const Header = () => {
                 >
                   <ShoppingCartOutlinedIcon fontSize="inherit" />
                   <StyledLink href="/cart" underline="none">
-                    <Typography variant="body1"> Cart</Typography>
+                    <Typography variant="body1"> {t("cart")}</Typography>
                   </StyledLink>
                 </StyledIconButton>
 
                 <StyledIconButton
-                disableRipple
+                  disableRipple
                   size="large"
                   aria-label="account"
                   sx={{ flexGrow: 1 }}
                 >
                   <AccountCircleOutlinedIcon fontSize="inherit" />
                   <Button
-                    
                     id="account-button"
                     onClick={handleClickAccount}
                     color="inherit"
-                    
                     aria-haspopup="true"
                     aria-expanded={Boolean(accountEl) ? "true" : undefined}
                     endIcon={<KeyboardArrowDownIcon />}
                   >
                     <StyledLink href="/account" underline="none">
-                      <Typography variant="body1"> Account</Typography>
+                      <Typography variant="body1"> {t("account")}</Typography>
                     </StyledLink>
                   </Button>
                   <Menu
@@ -326,26 +391,28 @@ const Header = () => {
                     }}
                     sx={{ display: { xs: "none", md: "flex" } }}
                   >
-                    <MenuItem onClick={handleCloseAcc}>
+                    <MenuItem>
                       <Link href="/login" color="inherit" underline="none">
-                        Login
+                        {t("login")}
                       </Link>
                     </MenuItem>
-                    <MenuItem onClick={handleCloseAcc}>
+                    <MenuItem>
                       <Link href="/signup" color="inherit" underline="none">
-                        Signup
+                        {t("signup")}
                       </Link>
                     </MenuItem>
                   </Menu>
                 </StyledIconButton>
               </Stack>
             </Grid>
-            <Grid item xs={1}></Grid>
+            <Grid item xs={1} sx={{ flexGrow: 1, mt: 3 }}>
+              <LanguageSelector />
+            </Grid>
           </Grid>
         </Box>
       </Toolbar>
 
-      <Toolbar disableGutters sx={{ display: { xs: "none", md: "flex" }}}>
+      <Toolbar disableGutters sx={{ display: { xs: "none", md: "flex" } }}>
         <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
           <Grid container>
             <Grid item xs={1}></Grid>
@@ -360,18 +427,18 @@ const Header = () => {
                 endIcon={<KeyboardArrowDownIcon />}
               >
                 <StyledLink href="/products" color="inherit" underline="none">
-                  Products
+                  {t("products")}
                 </StyledLink>
               </Button>
 
               <Button color="inherit">
                 <StyledLink href="/brands" color="inherit" underline="none">
-                  Brands
+                  {t("brands")}
                 </StyledLink>
               </Button>
               <Button color="inherit">
                 <StyledLink href="/support" color="inherit" underline="none">
-                  Support
+                  {t("support")}
                 </StyledLink>
               </Button>
             </Grid>
@@ -399,7 +466,7 @@ const Header = () => {
                 color="inherit"
                 underline="none"
               >
-                Phones
+                {t("phones")}
               </Link>
             </MenuItem>
             <MenuItem onClick={handleClose}>
@@ -408,7 +475,7 @@ const Header = () => {
                 color="inherit"
                 underline="none"
               >
-                Laptops
+                {t("laptops")}
               </Link>
             </MenuItem>
             <MenuItem onClick={handleClose}>
@@ -417,7 +484,7 @@ const Header = () => {
                 color="inherit"
                 underline="none"
               >
-                Tablets
+                {t("tablets")}
               </Link>
             </MenuItem>
             <MenuItem onClick={handleClose}>
@@ -426,7 +493,7 @@ const Header = () => {
                 color="inherit"
                 underline="none"
               >
-                Accessories
+                {t("accessories")}
               </Link>
             </MenuItem>
           </Menu>
