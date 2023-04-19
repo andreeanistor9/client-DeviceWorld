@@ -23,5 +23,9 @@
   "createAccount": "Creaza-ti contul",
   "loading": "Se incarca",
   "search": "Cauta",
-  "add_cart": "Adauga in cos"
+  "add_cart": "Adauga in cos",
+  "filters":"Filtre",
+  "price":"Pret",
+  "brand":"Marca",
+  "color":"Culoare"
 }

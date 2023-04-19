@@ -20,6 +20,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Product from "./Product";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
+import Filters from "../Components/Filters";
 function Products() {
   const { t } = useTranslation();
   const [products, setProducts] = useState([{}]);
@@ -38,14 +39,14 @@ function Products() {
   }, []);
 
   return (
-    <Grid container sx={{ m: 2 }}>
+    <Grid container sx={{ m: 2 , mt:10}}>
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
         <Grid item xs={1}></Grid>
         <Grid item xs={2}>
-          <Typography variant="h6">filters</Typography>
+          <Filters/>
         </Grid>
         <Grid item xs={8}>
-          <Typography variant="h6">{t("products")}</Typography>
+        
           <Grid
             container
             rowSpacing={1}

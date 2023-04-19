@@ -23,5 +23,9 @@
   "createAccount": "Create Account",
   "loading": "Loading",
   "search": "Search",
-  "add_cart": "Add to cart"
+  "add_cart": "Add to cart",
+  "filters":"Filters",
+  "price":"Price",
+  "brand":"Brand",
+  "color":"Color"
 }
