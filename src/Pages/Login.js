@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -15,19 +15,45 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+
 function Login() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = React.useState(false);
-
+  const [user, setUser] = useState();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-  const loginUser = () => {
-    console.log(username, password);
+  // const handleMouseDownPassword = (event) => {
+  //   event.preventDefault();
+  // };
+  
+  const loginUser =  async(e) => {
+      try {
+      e.preventDefault();
+      const body = {username, password};
+      const response = await fetch("/login", {
+        method:"POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      })
+      const data = await response.json();
+      if(data.loggedIn){
+        console.log("login succcessful");
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("username", username);
+        navigate("/")
+        window.location.reload();
+      }else {
+        // login failed, display error message
+        console.log("Login failed");
+        alert(data.status);
+      }
+      } catch (err) {
+        console.error(err.message)
+      }
   };
   return (
     <Grid container>
@@ -52,6 +78,9 @@ function Login() {
               justifyContent: "center",
               alignItems: "center",
             }}
+            id="login"
+            method="post"
+            action="/login"
           >
             <FormControl required fullWidth margin="normal">
               <InputLabel htmlFor="username">{t("username")}</InputLabel>
@@ -61,7 +90,8 @@ function Login() {
                 label={t("username")}
                 autoComplete="username"
                 value={username}
-                disableUnderline={true}
+                required
+                
                 onChange={(e) => setUsername(e.target.value)}
               />
             </FormControl>
@@ -73,21 +103,22 @@ function Login() {
                 autoComplete="password"
                 value={password}
                 label={t("password")}
-                disableUnderline={true}
+                required
+                
                 onChange={(e) => setPassword(e.target.value)}
                 type={showPassword ? "text" : "password"}
                 endAdornment={
                   showPassword ? (
-                    <InputAdornment position="end">
+                    <InputAdornment position="end" >
                       <VisibilityOff
-                        fontsize="default"
+                        fontSize="default"
                         onClick={handleClickShowPassword}
                       />
                     </InputAdornment>
                   ) : (
-                    <InputAdornment position="end">
+                    <InputAdornment position="end" >
                       <Visibility
-                        fontsize="default"
+                        fontSize="default"
                         onClick={handleClickShowPassword}
                       />
                     </InputAdornment>
@@ -100,6 +131,7 @@ function Login() {
               variant="contained"
               sx={{ width: "70%" }}
               onClick={loginUser}
+              
             >
               {t("login")}
             </Button>

@@ -27,5 +27,7 @@
   "filters":"Filters",
   "price":"Price",
   "brand":"Brand",
-  "color":"Color"
+  "color":"Color",
+  "tv":"TVs",
+  "logout":"logout"
 }

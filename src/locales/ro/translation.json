@@ -27,5 +27,7 @@
   "filters":"Filtre",
   "price":"Pret",
   "brand":"Marca",
-  "color":"Culoare"
+  "color":"Culoare",
+  "tv":"Televizoare",
+  "logout":"delogare"
 }

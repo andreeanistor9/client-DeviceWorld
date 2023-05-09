@@ -9,6 +9,7 @@ function Account() {
     <Grid item xs={1}></Grid>
     <Grid item xs={10} >
       <Typography variant="h6">{t("account")}</Typography>
+      <Typography variant="p1">{localStorage.getItem("username")}</Typography>
        </Grid>
     </Grid>
   )
