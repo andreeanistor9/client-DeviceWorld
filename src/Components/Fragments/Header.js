@@ -55,13 +55,24 @@ const Header = () => {
   const handleSearch = (event) => {
     setSearchedEl(event.currentTarget.value);
   };
+  const handleLogout = async () => {
+    //alert("ne delogam")
+    const response = await fetch("/logout")
+    if(response.ok){
+      localStorage.clear();
+      window.location.reload()
+    }else{
+      alert("Logout failed")
+    }
+  };
 
   return (
     <Navbar position="static">
       <Toolbar sx={{ backgroundColor: "#ffffff", color: "black" }}>
+        {/* ecran mic */}
         <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
           <Grid container spacing={1}>
-            <Grid xs={7}>
+            <Grid item xs={7}>
               <StyledIconButton
                 disableRipple
                 size="large"
@@ -135,7 +146,7 @@ const Header = () => {
                 >
                   <MenuItem onClick={handleClose}>
                     <Link
-                      href="/products?type=phones"
+                      href="/products?type=phone"
                       color="inherit"
                       underline="none"
                     >
@@ -144,7 +155,7 @@ const Header = () => {
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
                     <Link
-                      href="/products?type=laptops"
+                      href="/products?type=laptop"
                       color="inherit"
                       underline="none"
                     >
@@ -153,11 +164,20 @@ const Header = () => {
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
                     <Link
-                      href="/products?type=tablets"
+                      href="/products?type=tablet"
                       color="inherit"
                       underline="none"
                     >
                       {t("tablets")}
+                    </Link>
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>
+                    <Link
+                      href="/products?type=tv"
+                      color="inherit"
+                      underline="none"
+                    >
+                      {t("tv")}
                     </Link>
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
@@ -197,7 +217,7 @@ const Header = () => {
               </StyledIconButton>
             </Grid>
 
-            <Grid xs={5} container justifyContent="flex-end" spacing={1}>
+            <Grid item xs={5} container justifyContent="flex-end" spacing={1}>
               <StyledIconButton
                 disableRipple
                 size="large"
@@ -288,7 +308,7 @@ const Header = () => {
             </Grid>
           </Grid>
         </Box>
-
+        {/* ecran mare */}
         <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
           <Grid container>
             <Grid item xs={1}></Grid>
@@ -307,7 +327,7 @@ const Header = () => {
                       component="div"
                       sx={{
                         flexGrow: 1,
-                        m: 1,
+                        m: 1, 
                         fontFamily: "fantasy",
                         fontSize: "2rem",
                         color: "#22559c",
@@ -372,7 +392,14 @@ const Header = () => {
                     endIcon={<KeyboardArrowDownIcon />}
                   >
                     <StyledLink href="/account" underline="none">
-                      <Typography variant="body1"> {t("account")}</Typography>
+                      {localStorage.getItem("user") ? (
+                        <Typography variant="body1">
+                          
+                          {localStorage.getItem("username")}
+                        </Typography>
+                      ) : (
+                        <Typography variant="body1"> {t("account")}</Typography>
+                      )}
                     </StyledLink>
                   </Button>
                   <Menu
@@ -391,16 +418,27 @@ const Header = () => {
                     }}
                     sx={{ display: { xs: "none", md: "flex" } }}
                   >
-                    <MenuItem>
-                      <Link href="/login" color="inherit" underline="none">
-                        {t("login")}
-                      </Link>
-                    </MenuItem>
-                    <MenuItem>
-                      <Link href="/signup" color="inherit" underline="none">
-                        {t("signup")}
-                      </Link>
-                    </MenuItem>
+                    {!localStorage.getItem("user") ? (
+                      <Box>
+                        <MenuItem>
+                          <Link href="/login" color="inherit" underline="none">
+                            {t("login")}
+                          </Link>
+                        </MenuItem>
+                        <MenuItem>
+                          <Link href="/signup" color="inherit" underline="none">
+                            {t("signup")}
+                          </Link>
+                        </MenuItem>
+                      </Box>
+                    ) : (
+                      <MenuItem>
+                      <Button onClick={handleLogout}>{t("logout")}</Button>
+                        {/* <Link href="/" color="inherit" underline="none">
+                          
+                        </Link> */}
+                      </MenuItem>
+                    )}
                   </Menu>
                 </StyledIconButton>
               </Stack>
@@ -430,7 +468,6 @@ const Header = () => {
                   {t("products")}
                 </StyledLink>
               </Button>
-
               <Button color="inherit">
                 <StyledLink href="/brands" color="inherit" underline="none">
                   {t("brands")}
@@ -462,7 +499,7 @@ const Header = () => {
           >
             <MenuItem onClick={handleClose}>
               <Link
-                href="/products?type=phones"
+                href="/products?type=phone"
                 color="inherit"
                 underline="none"
               >
@@ -471,7 +508,7 @@ const Header = () => {
             </MenuItem>
             <MenuItem onClick={handleClose}>
               <Link
-                href="/products?type=laptops"
+                href="/products?type=laptop"
                 color="inherit"
                 underline="none"
               >
@@ -480,11 +517,16 @@ const Header = () => {
             </MenuItem>
             <MenuItem onClick={handleClose}>
               <Link
-                href="/products?type=tablets"
+                href="/products?type=tablet"
                 color="inherit"
                 underline="none"
               >
                 {t("tablets")}
+              </Link>
+            </MenuItem>
+            <MenuItem onClick={handleClose}>
+              <Link href="/products?type=tv" color="inherit" underline="none">
+                {t("tv")}
               </Link>
             </MenuItem>
             <MenuItem onClick={handleClose}>

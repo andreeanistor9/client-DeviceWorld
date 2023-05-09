@@ -1,11 +1,23 @@
 import React from "react";
+
 import "bootstrap/dist/css/bootstrap.css";
 import Carousel from "react-bootstrap/Carousel";
 import { Grid, Link, Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
+
 function Home() {
   // eslint-disable-next-line
   const { t } = useTranslation();
+  // const [authenticated, setAuthenticated] = useState(null)
+  // useEffect(()=>{
+  //   const loggedInUser = localStorage.getItem("user");
+  //   if(loggedInUser){
+  //     setAuthenticated(loggedInUser);
+  //   }
+  // }, []);
+  // if(!authenticated){
+  //   return <Navigate replace to="/login"/>
+  // }
   return (
     <Grid container>
       <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
