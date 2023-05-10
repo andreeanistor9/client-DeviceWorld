@@ -3,6 +3,7 @@
   "cart": "Cos",
   "account": "Contul meu",
   "products": "Produse",
+  "all":"Toate",
   "brands": "Marci",
   "support": "Suport",
   "phones": "Telefoane",
@@ -29,5 +30,14 @@
   "brand":"Marca",
   "color":"Culoare",
   "tv":"Televizoare",
-  "logout":"delogare"
+  "logout":"delogare",
+  "productReturn": "Formular de returnare a produselor",
+  "returnPolicy": "Politica de returnare a produselor",
+  "terms": "Termene si conditii",
+  "privatePolicy": "Politca privata ",
+  "contact": "Contact",
+  "communication": "Comunicare",
+  "newsletter": "Abonare la newsletter",
+  "legalInformation": "Informatii legale",
+  "follow": "Urmareste-ne"
 }

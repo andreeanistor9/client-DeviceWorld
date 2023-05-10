@@ -17,6 +17,7 @@ import {
   OutlinedInput,
   InputLabel,
   Select,
+  Link
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import {
@@ -67,8 +68,6 @@ function Products() {
       console.error(err.message);
     }
   };
-  
- 
 
   useEffect(() => {
     getProducts(currentType);
@@ -185,18 +184,18 @@ function Products() {
               inputProps={{ "aria-label": "controlled" }}
             />
           </Stack>
-          <Typography variant="h6" >{t('brand')}</Typography>
-          <FormControl sx={{m:1, width:"300px"}}>
-            <select value={selectedBrand} onChange={handleChangeBrand}>
-              <option value="">All Brands</option>
-              <option value="apple">apple</option>
-              <option value="asus">asus</option>
-              <option value="dell">dell</option>
-              <option value="huawei">huawei</option>
-              <option value="lenovo">lenovo</option>
-              <option value="samsung">samsung</option>
-              <option value="sony">sony</option>
-            </select>
+          <FormControl sx={{m:1, width:"100%"}}>
+          <InputLabel>{t('brand')}</InputLabel>
+            <Select value={selectedBrand} label={t('brand')} onChange={handleChangeBrand}>
+              <MenuItem value="">{t('all')}</MenuItem>
+              <MenuItem value="apple">Apple</MenuItem>
+              <MenuItem value="asus">Asus</MenuItem>
+              <MenuItem value="dell">Dell</MenuItem>
+              <MenuItem value="huawei">Huawei</MenuItem>
+              <MenuItem value="lenovo">Lenovo</MenuItem>
+              <MenuItem value="samsung">Samsung</MenuItem>
+              <MenuItem value="sony">Sony</MenuItem>
+            </Select>
           </FormControl>
           {/* <Filters/>  */}
         </Grid>

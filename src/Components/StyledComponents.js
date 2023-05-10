@@ -46,7 +46,7 @@ export const StyledListItem = styled(ListItem)({
 });
 
 export const StyledList = styled(List)({
-  backgroundColor: "#f0f4fa",
+  backgroundColor: "#edf2f9",
 
   "&:hover, &:focus, &:active": {
     outline: "#b1cefa groove 2px",

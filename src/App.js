@@ -15,11 +15,10 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Users from "./Pages/Users";
 function App() {
-  
   return (
     <Router>
       <Header />
-
+      
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/brands" element={<Brands />} />
@@ -34,8 +33,10 @@ function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/product" element={<Product />} />
       </Routes>
-
-      <Footer />
+      
+      <Footer
+        
+      />
     </Router>
   );
 }

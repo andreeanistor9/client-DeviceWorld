@@ -24,9 +24,10 @@ import { StyledIconButton, Navbar, StyledLink } from "../StyledComponents";
 import LanguageSelector from "../LanguageSelector";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-
+import { useNavigate } from "react-router-dom"
 const Header = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [accountEl, setAccountEl] = useState(null);
@@ -57,12 +58,13 @@ const Header = () => {
   };
   const handleLogout = async () => {
     //alert("ne delogam")
-    const response = await fetch("/logout")
-    if(response.ok){
+    const response = await fetch("/logout");
+    if (response.ok) {
       localStorage.clear();
-      window.location.reload()
-    }else{
-      alert("Logout failed")
+      navigate('/')
+      window.location.reload();
+    } else {
+      alert("Logout failed");
     }
   };
 
@@ -109,9 +111,8 @@ const Header = () => {
                     aria-expanded={open ? "true" : undefined}
                     endIcon={<KeyboardArrowRightIcon />}
                   >
-                    <Link href="/products" color="inherit" underline="none">
-                      {t("products")}
-                    </Link>
+                    {" "}
+                    {t("products")}
                   </Button>
 
                   <Button color="inherit">
@@ -144,6 +145,16 @@ const Header = () => {
                     display: { xs: "block", md: "none" },
                   }}
                 >
+                  <MenuItem onClick={handleClose}>
+                    <Link
+                      href="/products"
+                      color="inherit"
+                      underline="none"
+                    >
+                      {t('all')}
+                    </Link>
+                  </MenuItem>
+
                   <MenuItem onClick={handleClose}>
                     <Link
                       href="/products?type=phone"
@@ -327,7 +338,7 @@ const Header = () => {
                       component="div"
                       sx={{
                         flexGrow: 1,
-                        m: 1, 
+                        m: 1,
                         fontFamily: "fantasy",
                         fontSize: "2rem",
                         color: "#22559c",
@@ -394,7 +405,6 @@ const Header = () => {
                     <StyledLink href="/account" underline="none">
                       {localStorage.getItem("user") ? (
                         <Typography variant="body1">
-                          
                           {localStorage.getItem("username")}
                         </Typography>
                       ) : (
@@ -433,7 +443,7 @@ const Header = () => {
                       </Box>
                     ) : (
                       <MenuItem>
-                      <Button onClick={handleLogout}>{t("logout")}</Button>
+                        <Button onClick={handleLogout}>{t("logout")}</Button>
                         {/* <Link href="/" color="inherit" underline="none">
                           
                         </Link> */}
@@ -464,9 +474,7 @@ const Header = () => {
                 aria-expanded={open ? "true" : undefined}
                 endIcon={<KeyboardArrowDownIcon />}
               >
-                <StyledLink href="/products" color="inherit" underline="none">
-                  {t("products")}
-                </StyledLink>
+                {t("products")}
               </Button>
               <Button color="inherit">
                 <StyledLink href="/brands" color="inherit" underline="none">
@@ -497,6 +505,11 @@ const Header = () => {
             }}
             sx={{ display: { xs: "none", md: "flex" } }}
           >
+            <MenuItem onClick={handleClose}>
+              <StyledLink href="/products" color="inherit" underline="none">
+                {t("all")}
+              </StyledLink>
+            </MenuItem>
             <MenuItem onClick={handleClose}>
               <Link
                 href="/products?type=phone"

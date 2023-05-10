@@ -3,6 +3,7 @@
   "cart": "Cart",
   "account": "Account",
   "products": "Products",
+  "all":"All products",
   "brands": "Brands",
   "support": "Support",
   "phones": "Phones",
@@ -29,5 +30,14 @@
   "brand":"Brand",
   "color":"Color",
   "tv":"TVs",
-  "logout":"logout"
+  "logout":"logout",
+  "productReturn": "Product return form",
+  "returnPolicy": "Return Policy",
+  "terms": "Terms and Condition",
+  "privatePolicy": "Private Policy",
+  "contact": "Contact",
+  "communication": "Communication",
+  "newsletter": "Newsletter subscription",
+  "legalInformation": "Legal Information",
+  "follow": "Follow us"
 }
