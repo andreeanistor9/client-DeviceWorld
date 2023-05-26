@@ -17,7 +17,7 @@ import {
   OutlinedInput,
   InputLabel,
   Select,
-  Link
+  Link,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import {
@@ -35,14 +35,15 @@ import Filters from "../Components/Filters";
 import SearchIcon from "@mui/icons-material/Search";
 function Products() {
   const { t } = useTranslation();
-
   const [searchedEl, setSearchedEl] = useState("");
   const [price, setPrice] = useState(0);
   const [checked, setChecked] = useState(false);
+  const [selectedColors, setSelectedColors] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState([]);
   const [products, setProducts] = useState([]);
   const [brandOptions, setBrandOptions] = useState([]);
   const currentType = new URLSearchParams(window.location.search).get("type");
+  const colors = [];
   const getProducts = async (type, brand) => {
     try {
       let url = "/products";
@@ -51,18 +52,19 @@ function Products() {
         if (brand) {
           url += `&brand=${brand}`;
         }
-      } 
-      //console.log(url)
+      } else if (brand) {
+        // Add the brand parameter to the URL even if type is not present
+        url += `?brand=${brand}`;
+      }
       const response = await fetch(url);
       const jsonData = await response.json();
       setProducts(jsonData.products);
-      console.log(jsonData.products)
+
+      console.log(colors);
       if (!type) {
         if (brand) {
-          url += `?brand=${brand}`;
-          console.log(url)
           setBrandOptions(jsonData.brandOptions);
-        } 
+        }
       }
     } catch (err) {
       console.error(err.message);
@@ -136,6 +138,40 @@ function Products() {
       setProducts(filterByPrice);
     }
   };
+  const handleChooseColor = async (event) => {
+    let selectedOptions = event.target.value;
+
+    // convert to array if selectedOptions is a string
+    if (typeof selectedOptions === "string") {
+      selectedOptions = [selectedOptions];
+    }
+
+    setSelectedColors(selectedOptions);
+
+    const queryParams = new URLSearchParams({
+      colors: selectedOptions.join(","),
+    });
+
+    const response = await fetch(`/products?${queryParams}`);
+    const jsonData = await response.json();
+
+    let filteredProducts = jsonData.products;
+
+    if (currentType) {
+      filteredProducts = filteredProducts.filter(
+        (item) => item.product_type.toLowerCase() === currentType.toLowerCase()
+      );
+    }
+
+    if (selectedOptions.length > 0) {
+      filteredProducts = filteredProducts.filter((item) =>
+        selectedOptions.includes(item.color.toLowerCase())
+      );
+    }
+
+    setProducts(filteredProducts);
+  };
+
   const handleChangeBrand = (event) => {
     setSelectedBrand(event.target.value);
     if (event.target.value === "") {
@@ -166,8 +202,9 @@ function Products() {
               ),
             }}
           ></TextField>
-          
-          <Typography variant="h6" sx={{mt:1}}>{t('price')}</Typography>
+          <Typography variant="h6" sx={{ mt: 1 }}>
+            {t("price")}
+          </Typography>
           <Stack direction="row" sx={{ m: 1 }}>
             <Slider
               aria-label={t("price")}
@@ -184,19 +221,60 @@ function Products() {
               inputProps={{ "aria-label": "controlled" }}
             />
           </Stack>
-          <FormControl sx={{m:1, width:"100%"}}>
-          <InputLabel>{t('brand')}</InputLabel>
-            <Select value={selectedBrand} label={t('brand')} onChange={handleChangeBrand}>
-              <MenuItem value="">{t('all')}</MenuItem>
-              <MenuItem value="apple">Apple</MenuItem>
-              <MenuItem value="asus">Asus</MenuItem>
-              <MenuItem value="dell">Dell</MenuItem>
-              <MenuItem value="huawei">Huawei</MenuItem>
-              <MenuItem value="lenovo">Lenovo</MenuItem>
-              <MenuItem value="samsung">Samsung</MenuItem>
-              <MenuItem value="sony">Sony</MenuItem>
+          {currentType ? (
+            <FormControl sx={{ m: 1, width: "100%" }}>
+              <InputLabel>{t("brand")}</InputLabel>
+              <Select
+                value={selectedBrand}
+                label={t("brand")}
+                onChange={handleChangeBrand}
+              >
+                <MenuItem value="">{t("all")}</MenuItem>
+                <MenuItem value="apple">Apple</MenuItem>
+                <MenuItem value="asus">Asus</MenuItem>
+                <MenuItem value="dell">Dell</MenuItem>
+                <MenuItem value="huawei">Huawei</MenuItem>
+                <MenuItem value="lenovo">Lenovo</MenuItem>
+                <MenuItem value="samsung">Samsung</MenuItem>
+                <MenuItem value="sony">Sony</MenuItem>
+              </Select>
+            </FormControl>
+          ) : (
+            <></>
+          )}
+
+          {/* <FormControl>
+            <InputLabel id="colors-label">Colors</InputLabel>
+            <Select
+              labelId="colors-label"
+              id="colors"
+              multiple
+              value={selectedColors}
+              onChange={handleChooseColor}
+              renderValue={(selected) => selected.join(", ")}
+              sx={{ width: "16vw" }}
+            >
+              {typeof products === "undefined" || !Array.isArray(products) ? (
+                <MenuItem disabled>{t("loading")}...</MenuItem>
+              ) : (
+                products.map((product) => {
+                  if (!colors.includes(product.color))
+                    colors.push(product.color);
+                })
+              )}
+              {colors.map((color) => (
+                <MenuItem
+                  key={color}
+                  value={[color]}
+                  onClick={handleChooseColor}
+                >
+                  <Checkbox checked={selectedColors.indexOf(color) > -1} />
+                  <ListItemText primary={color} />
+                </MenuItem>
+              ))}
             </Select>
-          </FormControl>
+          </FormControl> */}
+
           {/* <Filters/>  */}
         </Grid>
         <Grid item xs={8}>

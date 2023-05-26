@@ -114,13 +114,22 @@ const Footer = () => {
               sx={{ padding: 2, backgroundColor: "rgba(151, 177, 220, 0.5)" }}
             >
               <Typography variant="h6">{t("follow")}</Typography>
-              <Link href="https://www.facebook.com/deviceworld009">
+              <Link
+                target="_blank"
+                href="https://www.facebook.com/deviceworld009"
+              >
                 <FacebookOutlined fontSize="large" />
               </Link>
-              <Link href="https://www.instagram.com/deviceworld009">
+              <Link
+                target="_blank"
+                href="https://www.instagram.com/deviceworld009"
+              >
                 <Instagram fontSize="large" />
               </Link>
-              <Link href="https://www.linkedin.com/deviceworld009">
+              <Link
+                target="_blank"
+                href="https://www.linkedin.com/deviceworld009"
+              >
                 <LinkedIn fontSize="large" />
               </Link>
             </Box>
