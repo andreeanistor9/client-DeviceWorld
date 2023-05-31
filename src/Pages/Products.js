@@ -18,6 +18,8 @@ import {
   InputLabel,
   Select,
   Link,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import {
@@ -28,22 +30,38 @@ import {
 } from "../Components/StyledComponents";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import Product from "./Product";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
-import Filters from "../Components/Filters";
 import SearchIcon from "@mui/icons-material/Search";
+import Product from "./Product";
 function Products() {
   const { t } = useTranslation();
   const [searchedEl, setSearchedEl] = useState("");
   const [price, setPrice] = useState(0);
   const [checked, setChecked] = useState(false);
   const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedBrand, setSelectedBrand] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [products, setProducts] = useState([]);
   const [brandOptions, setBrandOptions] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [resetFilters, setResetFilters] = useState(false);
+  const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
+  const priceRangeOptions = [
+    { value: "1000-2000", label: "1000 - 2000" },
+    { value: "2000-3000", label: "2000 - 3000" },
+    { value: "3000-4000", label: "3000 - 4000" },
+    { value: "4000-5000", label: "4000 - 5000" },
+    { value: "5000-100000", label: "5000+" },
+  ];
+  const orderOptions = [
+    { value: "1", label: "crescator" },
+    { value: "0", label: "descrescator" },
+  ];
   const currentType = new URLSearchParams(window.location.search).get("type");
   const colors = [];
+  const [cartItems, setCartItems] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showOrder, setShowOrder] = useState(false);
   const getProducts = async (type, brand) => {
     try {
       let url = "/products";
@@ -53,7 +71,6 @@ function Products() {
           url += `&brand=${brand}`;
         }
       } else if (brand) {
-        // Add the brand parameter to the URL even if type is not present
         url += `?brand=${brand}`;
       }
       const response = await fetch(url);
@@ -75,207 +92,155 @@ function Products() {
     getProducts(currentType);
   }, [currentType]);
 
-  const handleSearchClick = async () => {
-    const response = await fetch("/products");
-    const jsonData = await response.json();
-
-    if (currentType) {
-      const filterByType = jsonData.products.filter((item) => {
-        if (item.product_type.toLowerCase() === currentType.toLowerCase())
-          return item;
-      });
-      if (searchedEl === "") {
-        setProducts(filterByType);
-        return;
-      }
-      const filterBySearch = jsonData.products.filter((item) => {
-        if (
-          item.name.toLowerCase().includes(searchedEl.toLowerCase()) &&
-          item.product_type.toLowerCase() === currentType.toLowerCase()
-        ) {
-          return item;
-        }
-      });
-      setProducts(filterBySearch);
-    } else {
-      if (searchedEl === "") {
-        setProducts(jsonData);
-        return;
-      }
-      const filterBySearch = jsonData.products.filter((item) => {
-        if (item.name.toLowerCase().includes(searchedEl.toLowerCase())) {
-          return item;
-        }
-      });
-      setProducts(filterBySearch);
-    }
-  };
-  const handleChangePrice = async (event) => {
-    setChecked(event.target.checked);
-
-    const response = await fetch("/products");
-    const jsonData = await response.json();
-
-    if (!event.target.checked && currentType) {
-      const filterByType = jsonData.products.filter((item) => {
-        return item.product_type.toLowerCase() === currentType.toLowerCase();
-      });
-      const filterByPrice = filterByType.filter((item) => {
-        return item.price >= 0;
-      });
-      setProducts(filterByPrice);
-    } else {
-      const filterByPrice = jsonData.products.filter((item) => {
-        if (currentType) {
-          return (
-            item.price >= price &&
-            item.product_type.toLowerCase() === currentType.toLowerCase()
-          );
-        } else {
-          return item.price >= price;
-        }
-      });
-      setProducts(filterByPrice);
-    }
-  };
-  const handleChooseColor = async (event) => {
-    let selectedOptions = event.target.value;
-
-    // convert to array if selectedOptions is a string
-    if (typeof selectedOptions === "string") {
-      selectedOptions = [selectedOptions];
-    }
-
-    setSelectedColors(selectedOptions);
-
-    const queryParams = new URLSearchParams({
-      colors: selectedOptions.join(","),
-    });
-
-    const response = await fetch(`/products?${queryParams}`);
-    const jsonData = await response.json();
-
-    let filteredProducts = jsonData.products;
-
-    if (currentType) {
-      filteredProducts = filteredProducts.filter(
-        (item) => item.product_type.toLowerCase() === currentType.toLowerCase()
-      );
-    }
-
-    if (selectedOptions.length > 0) {
-      filteredProducts = filteredProducts.filter((item) =>
-        selectedOptions.includes(item.color.toLowerCase())
-      );
-    }
-
-    setProducts(filteredProducts);
-  };
-
   const handleChangeBrand = (event) => {
     setSelectedBrand(event.target.value);
-    if (event.target.value === "") {
-      getProducts(currentType);
-    } else {
-      getProducts(currentType, event.target.value);
-    }
   };
+  const handleChangeSearch = (event) => {
+    setSearchedEl(event.target.value);
+  };
+
+  const handlePriceRangeToggle = (value) => {
+    const selectedIndex = selectedPriceRanges.indexOf(value);
+    let newSelectedPriceRanges = [];
+
+    if (selectedIndex === -1) {
+      newSelectedPriceRanges = [...selectedPriceRanges, value];
+    } else {
+      newSelectedPriceRanges = selectedPriceRanges.filter(
+        (range) => range !== value
+      );
+    }
+
+    setSelectedPriceRanges(newSelectedPriceRanges);
+  };
+
+  const filterProducts = () => {
+    let filteredProducts = products;
+    if (searchedEl !== "") {
+      filteredProducts = filteredProducts.filter((product) =>
+        product.name.toLowerCase().includes(searchedEl.toLowerCase())
+      );
+    }
+    if (selectedBrand) {
+      filteredProducts = filteredProducts.filter(
+        (product) => product.brand.toLowerCase() === selectedBrand.toLowerCase()
+      );
+    }
+
+    if (selectedPriceRanges.length > 0) {
+      filteredProducts = filteredProducts.filter((product) => {
+        for (const range of selectedPriceRanges) {
+          const [min, max] = range.split("-");
+          if (
+            product.price >= parseInt(min) &&
+            product.price <= parseInt(max)
+          ) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+    setFilteredProducts(filteredProducts);
+  };
+  const handleResetFilters = () => {
+    setSearchedEl("");
+    setSelectedBrand("");
+    setSelectedPriceRanges([]);
+    setResetFilters(!resetFilters);
+  };
+  useEffect(() => {
+    filterProducts();
+  }, [products, searchedEl, selectedBrand, selectedPriceRanges, resetFilters]);
+  const handleAddToCart = (productId, name, price) => {
+    const cartItem = { productId, name, price };
+    setCartItems((prevCartItems) => [...prevCartItems, cartItem]);
+    fetch("/cart/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ productId, name, price }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.message);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  const handleToggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
+  const handleToggleOrder = () => {
+    setShowOrder(!showOrder);
+  };
+
   return (
     <Grid container sx={{ m: 2, mt: 10 }}>
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
         <Grid item xs={1}></Grid>
         <Grid item xs={2} sx={{ mr: 5 }}>
+          <Typography variant="h6">Filters</Typography>
           <TextField
             id="search"
             type="search"
             label={t("search")}
             value={searchedEl}
-            onChange={(e) => setSearchedEl(e.target.value)}
-            sx={{ width: "100%" }}
+            onChange={handleChangeSearch}
+            sx={{ width: "100%", mt: 3 }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <StyledIconButton onClick={handleSearchClick}>
-                    <SearchIcon />
-                  </StyledIconButton>
+                  <SearchIcon />
                 </InputAdornment>
               ),
             }}
           ></TextField>
-          <Typography variant="h6" sx={{ mt: 1 }}>
+          <Typography variant="body1" sx={{ mt: 5 }}>
             {t("price")}
           </Typography>
-          <Stack direction="row" sx={{ m: 1 }}>
-            <Slider
-              aria-label={t("price")}
-              value={price}
-              valueLabelDisplay="auto"
-              step={100}
-              min={0}
-              max={10000}
-              onChange={(e) => setPrice(e.target.value)}
-            ></Slider>
-            <Checkbox
-              checked={checked}
-              onChange={handleChangePrice}
-              inputProps={{ "aria-label": "controlled" }}
-            />
-          </Stack>
-          {currentType ? (
-            <FormControl sx={{ m: 1, width: "100%" }}>
-              <InputLabel>{t("brand")}</InputLabel>
-              <Select
-                value={selectedBrand}
-                label={t("brand")}
-                onChange={handleChangeBrand}
-              >
-                <MenuItem value="">{t("all")}</MenuItem>
-                <MenuItem value="apple">Apple</MenuItem>
-                <MenuItem value="asus">Asus</MenuItem>
-                <MenuItem value="dell">Dell</MenuItem>
-                <MenuItem value="huawei">Huawei</MenuItem>
-                <MenuItem value="lenovo">Lenovo</MenuItem>
-                <MenuItem value="samsung">Samsung</MenuItem>
-                <MenuItem value="sony">Sony</MenuItem>
-              </Select>
-            </FormControl>
-          ) : (
-            <></>
-          )}
-
-          {/* <FormControl>
-            <InputLabel id="colors-label">Colors</InputLabel>
-            <Select
-              labelId="colors-label"
-              id="colors"
-              multiple
-              value={selectedColors}
-              onChange={handleChooseColor}
-              renderValue={(selected) => selected.join(", ")}
-              sx={{ width: "16vw" }}
-            >
-              {typeof products === "undefined" || !Array.isArray(products) ? (
-                <MenuItem disabled>{t("loading")}...</MenuItem>
-              ) : (
-                products.map((product) => {
-                  if (!colors.includes(product.color))
-                    colors.push(product.color);
-                })
-              )}
-              {colors.map((color) => (
-                <MenuItem
-                  key={color}
-                  value={[color]}
-                  onClick={handleChooseColor}
-                >
-                  <Checkbox checked={selectedColors.indexOf(color) > -1} />
-                  <ListItemText primary={color} />
-                </MenuItem>
+          <FormControl sx={{ m: 1, width: "100%" }}>
+            <FormGroup>
+              {priceRangeOptions.map((option) => (
+                <FormControlLabel
+                  key={option.value}
+                  control={
+                    <Checkbox
+                      checked={selectedPriceRanges.indexOf(option.value) > -1}
+                      onChange={() => handlePriceRangeToggle(option.value)}
+                    />
+                  }
+                  label={option.label}
+                />
               ))}
+            </FormGroup>
+          </FormControl>
+          <FormControl sx={{ mt: 5, width: "100%" }}>
+            <InputLabel>{t("brand")}</InputLabel>
+            <Select
+              value={selectedBrand}
+              label={t("brand")}
+              onChange={handleChangeBrand}
+            >
+              <MenuItem value="">{t("all")}</MenuItem>
+              <MenuItem value="apple">Apple</MenuItem>
+              <MenuItem value="asus">Asus</MenuItem>
+              <MenuItem value="dell">Dell</MenuItem>
+              <MenuItem value="huawei">Huawei</MenuItem>
+              <MenuItem value="lenovo">Lenovo</MenuItem>
+              <MenuItem value="samsung">Samsung</MenuItem>
+              <MenuItem value="sony">Sony</MenuItem>
             </Select>
-          </FormControl> */}
-
-          {/* <Filters/>  */}
+          </FormControl>
+          <Button
+            variant="contained"
+            onClick={handleResetFilters}
+            sx={{ mt: 5, ml: "25%" }}
+          >
+            Reset Filters
+          </Button>
         </Grid>
         <Grid item xs={8}>
           <Grid
@@ -283,10 +248,12 @@ function Products() {
             rowSpacing={1}
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           >
-            {typeof products === "undefined" || !Array.isArray(products) ? (
+            {!filteredProducts ? (
               <p>{t("loading")}...</p>
+            ) : filteredProducts.length === 0 ? (
+              <p>{t("no_products_found")}</p>
             ) : (
-              products.map((product, i) => (
+              filteredProducts.map((product, i) => (
                 <Grid item xs={4}>
                   <StyledList>
                     <IconButton sx={{ color: "red" }}>
@@ -309,12 +276,36 @@ function Products() {
                     </StyledListItem>
 
                     <StyledListItem key={product.id}>
-                      <AddCartButton
-                        sx={{ backgroundColor: "#537ec5", color: "white" }}
-                      >
-                        <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
-                        {t("add_cart")}
-                      </AddCartButton>
+                      {localStorage.getItem("user") ? (
+                        <AddCartButton
+                          sx={{ backgroundColor: "#537ec5", color: "white" }}
+                          onClick={() =>
+                            handleAddToCart(
+                              product.id,
+                              product.name,
+                              product.price
+                            )
+                          }
+                        >
+                          <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
+                          {t("add_cart")}
+                        </AddCartButton>
+                      ) : (
+                        <AddCartButton
+                          disabled
+                          sx={{ backgroundColor: "#537ec5", color: "white" }}
+                          onClick={() =>
+                            handleAddToCart(
+                              product.id,
+                              product.name,
+                              product.price
+                            )
+                          }
+                        >
+                          <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
+                          {t("add_cart")}
+                        </AddCartButton>
+                      )}
                     </StyledListItem>
                   </StyledList>
                 </Grid>
@@ -339,31 +330,135 @@ function Products() {
             sx={{ justifyContent: "center", alignItems: "center" }}
           >
             {/* {t("products")} */}
-            <Button variant="outlined">
+            <Button variant="outlined" onClick={handleToggleFilters}>
               <FilterAltOutlinedIcon fontSize="large" />
               <Typography>Filters</Typography>
             </Button>
-            <Button variant="outlined">
+            <Button variant="outlined" onClick={handleToggleOrder}>
               <SortOutlinedIcon fontSize="large" />
               <Typography>Order</Typography>
             </Button>
           </Stack>
-
-          {typeof products === "undefined" || !Array.isArray(products) ? (
+          {showFilters && (
+            <Stack>
+              <TextField
+                id="search"
+                type="search"
+                label={t("search")}
+                value={searchedEl}
+                onChange={handleChangeSearch}
+                sx={{ width: "100%", mt: 3 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              ></TextField>
+              <Typography variant="body1" sx={{ mt: 5 }}>
+                {t("price")}
+              </Typography>
+              <FormControl sx={{ m: 1, width: "100%" }}>
+                <FormGroup>
+                  {priceRangeOptions.map((option) => (
+                    <FormControlLabel
+                      key={option.value}
+                      control={
+                        <Checkbox
+                          checked={
+                            selectedPriceRanges.indexOf(option.value) > -1
+                          }
+                          onChange={() => handlePriceRangeToggle(option.value)}
+                        />
+                      }
+                      label={option.label}
+                    />
+                  ))}
+                </FormGroup>
+              </FormControl>
+              <FormControl sx={{ mt: 5, width: "100%" }}>
+                <InputLabel>{t("brand")}</InputLabel>
+                <Select
+                  value={selectedBrand}
+                  label={t("brand")}
+                  onChange={handleChangeBrand}
+                >
+                  <MenuItem value="">{t("all")}</MenuItem>
+                  <MenuItem value="apple">Apple</MenuItem>
+                  <MenuItem value="asus">Asus</MenuItem>
+                  <MenuItem value="dell">Dell</MenuItem>
+                  <MenuItem value="huawei">Huawei</MenuItem>
+                  <MenuItem value="lenovo">Lenovo</MenuItem>
+                  <MenuItem value="samsung">Samsung</MenuItem>
+                  <MenuItem value="sony">Sony</MenuItem>
+                </Select>
+              </FormControl>
+              <Box sx={{ textAlign: "center" }}>
+                <Button
+                  variant="contained"
+                  onClick={handleResetFilters}
+                  sx={{ m: 2 }}
+                >
+                  Reset Filters
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleToggleFilters}
+                  sx={{ m: 2 }}
+                >
+                  Save Filters
+                </Button>
+              </Box>
+            </Stack>
+          )}
+          {showOrder && (
+            <Stack>
+              <FormControl sx={{ m:5, width: "100%" }}>
+                <FormGroup>
+                  {orderOptions.map((option) => (
+                    <FormControlLabel
+                      key={option.value}
+                      control={
+                        <Checkbox
+                          checked={
+                            selectedPriceRanges.indexOf(option.value) > -1
+                          }
+                          onChange={() => handlePriceRangeToggle(option.value)}
+                        />
+                      }
+                      label={option.label}
+                    />
+                  ))}
+                </FormGroup>
+              </FormControl>
+              <Button
+                variant="contained"
+                onClick={handleToggleOrder}
+                sx={{ m: 2 }}
+              >
+                Save
+              </Button>
+            </Stack>
+          )}
+          {!filteredProducts ? (
             <p>{t("loading")}...</p>
+          ) : filteredProducts.length === 0 ? (
+            <p>{t("no_products_found")}</p>
           ) : (
-            products.map((product, i) => (
+            filteredProducts.map((product, i) => (
               <List>
                 <IconButton sx={{ color: "red" }}>
                   <FavoriteBorderIcon fontSize="medium" />
                 </IconButton>
                 <StyledListItem key={product.image}>
-                  <Button href={`product`}>
+                  <Button href={`/product/${product.id}`} >
                     <img
                       src={`/images/products/${product.image}`}
                       width="100%"
                       alt={`product${i + 1}`}
                     />
+                   
                   </Button>
                 </StyledListItem>
                 <StyledListItem key={product.name}>
@@ -374,12 +469,28 @@ function Products() {
                 </StyledListItem>
 
                 <StyledListItem key={product.id}>
-                  <AddCartButton
-                    sx={{ backgroundColor: "#537ec5", color: "white" }}
-                  >
-                    <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
-                    {t("add_cart")}
-                  </AddCartButton>
+                  {localStorage.getItem("user") ? (
+                    <AddCartButton
+                      sx={{ backgroundColor: "#537ec5", color: "white" }}
+                      onClick={() =>
+                        handleAddToCart(product.id, product.name, product.price)
+                      }
+                    >
+                      <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
+                      {t("add_cart")}
+                    </AddCartButton>
+                  ) : (
+                    <AddCartButton
+                      disabled
+                      sx={{ backgroundColor: "#537ec5", color: "white" }}
+                      onClick={() =>
+                        handleAddToCart(product.id, product.name, product.price)
+                      }
+                    >
+                      <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
+                      {t("add_cart")}
+                    </AddCartButton>
+                  )}
                 </StyledListItem>
               </List>
             ))

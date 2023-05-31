@@ -8,9 +8,11 @@ import {
   FormControl,
   IconButton,
   Button,
+  Link
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import ArrowRightAltOutlinedIcon from "@mui/icons-material/ArrowRightAltOutlined";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -29,34 +31,34 @@ function Login() {
   // const handleMouseDownPassword = (event) => {
   //   event.preventDefault();
   // };
-  
-  const loginUser =  async(e) => {
-      try {
+
+  const loginUser = async (e) => {
+    try {
       e.preventDefault();
-      const body = {username, password};
+      const body = { username, password };
       const response = await fetch("/login", {
-        method:"POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(body)
-      })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
       const data = await response.json();
-      if(data.loggedIn){
+      if (data.loggedIn) {
         console.log("login succcessful");
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("username", username);
-        navigate("/")
+        navigate("/");
         window.location.reload();
-      }else {
+      } else {
         // login failed, display error message
         console.log("Login failed");
         alert(data.status);
       }
-      } catch (err) {
-        console.error(err.message)
-      }
+    } catch (err) {
+      console.error(err.message);
+    }
   };
   return (
-    <Grid container>
+    <Grid container sx={{paddingBottom:"10%"}}>
       <Grid item xs={1}></Grid>
       <Grid item xs={10}>
         <Typography variant="h2" sx={{ textAlign: "center", padding: 5 }}>
@@ -69,6 +71,7 @@ function Login() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            
           }}
         >
           <Stack
@@ -91,7 +94,6 @@ function Login() {
                 autoComplete="username"
                 value={username}
                 required
-                
                 onChange={(e) => setUsername(e.target.value)}
               />
             </FormControl>
@@ -104,19 +106,18 @@ function Login() {
                 value={password}
                 label={t("password")}
                 required
-                
                 onChange={(e) => setPassword(e.target.value)}
                 type={showPassword ? "text" : "password"}
                 endAdornment={
                   showPassword ? (
-                    <InputAdornment position="end" >
+                    <InputAdornment position="end">
                       <VisibilityOff
                         fontSize="default"
                         onClick={handleClickShowPassword}
                       />
                     </InputAdornment>
                   ) : (
-                    <InputAdornment position="end" >
+                    <InputAdornment position="end">
                       <Visibility
                         fontSize="default"
                         onClick={handleClickShowPassword}
@@ -129,12 +130,15 @@ function Login() {
             <Button
               type="submit"
               variant="contained"
-              sx={{ width: "70%" }}
+              sx={{ width: "70%", m: 5 }}
               onClick={loginUser}
-              
             >
               {t("login")}
             </Button>
+            <Typography>
+              {t("noAccount")} <ArrowRightAltOutlinedIcon />{" "}
+              <Link href="/signup">{t("signup")}</Link>
+            </Typography>
           </Stack>
         </Box>
       </Grid>

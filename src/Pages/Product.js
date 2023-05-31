@@ -1,22 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { useTransition } from "react";
-function Product() {
-  //   const { t } = useTranslation();
-  //   const [product, setProduct] = useState([{}]);
-  //   const getProduct = async () => {
-  //     try {
-  //       const response = await fetch("/product");
-  //       const jsonData = await response.json();
+import { useTranslation } from "react-i18next";
 
-  //       setProduct(jsonData);
-  //     } catch (err) {
-  //       console.error(err.message);
-  //     }
-  //   };
-  //   useEffect(() => {
-  //     getProduct();
-  //   }, []);
-  return <div>{/* <p>{product[0].name}</p> */}</div>;
+function Product({ pid }) {
+  const { t } = useTranslation();
+
+  const [product, setProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`/product/${pid}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch product");
+        }
+        const data = await response.json();
+        setProduct(data.product);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+
+    fetchProduct();
+  }, [pid]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!product) {
+    return <div>Product not found</div>;
+  }
+
+  return (
+    <div>
+      <h2>buna</h2>
+      {/* Render the rest of the product details */}
+    </div>
+  );
 }
 
 export default Product;

@@ -39,5 +39,20 @@
   "communication": "Comunicare",
   "newsletter": "Abonare la newsletter",
   "legalInformation": "Informatii legale",
-  "follow": "Urmareste-ne"
+  "follow": "Urmareste-ne",
+  "remove": "Sterge",
+  "placeOrder": "Plaseaza comanda",
+  "orderHistory":"Comenzile tale",
+  "totalPrice": "Pret total",
+  "orderId": "ID-ul comenzii",
+  "product":"Produs",
+  "emptyCart":"Cosul este gol!",
+  "goShopping": "Vezi produsele",
+  "continueShopping": "Continua cumparaturile",
+  "notLoggedIn":"Nu sunteti autentificat",
+  "noAccount":"Nu aveti cont?",
+  "haveAccount":"Aveti deja un cont?",
+  "address": "Adresa",
+  "orderDetails": "Detalii comanda",
+  "orderReceived": "Comanda dumneavoastra a fost plasata!"
 }

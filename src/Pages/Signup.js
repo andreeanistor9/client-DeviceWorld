@@ -11,9 +11,11 @@ import {
   Checkbox,
   FormControlLabel,
   Input,
+  Link
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import ArrowRightAltOutlinedIcon from "@mui/icons-material/ArrowRightAltOutlined";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -85,6 +87,10 @@ function Signup() {
         <Typography variant="h2" sx={{ textAlign: "center", padding: 5 }}>
           {t("createAccount")}
         </Typography>
+        <Typography sx={{ textAlign: "center" }}> 
+              {t("haveAccount")} <ArrowRightAltOutlinedIcon />{" "}
+              <Link href="/login">{t("login")}</Link>
+            </Typography>
         <Box
           component="form"
           autoComplete="off"
@@ -92,6 +98,7 @@ function Signup() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            padding:2
           }}
         >
           <Stack
@@ -215,6 +222,7 @@ function Signup() {
             >
               {t("signup")}
             </Button>
+            
           </Stack>
         </Box>
       </Grid>

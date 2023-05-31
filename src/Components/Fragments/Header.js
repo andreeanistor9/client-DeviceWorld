@@ -24,10 +24,10 @@ import { StyledIconButton, Navbar, StyledLink } from "../StyledComponents";
 import LanguageSelector from "../LanguageSelector";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 const Header = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [accountEl, setAccountEl] = useState(null);
@@ -61,7 +61,7 @@ const Header = () => {
     const response = await fetch("/logout");
     if (response.ok) {
       localStorage.clear();
-      navigate('/')
+      navigate("/");
       window.location.reload();
     } else {
       alert("Logout failed");
@@ -146,12 +146,8 @@ const Header = () => {
                   }}
                 >
                   <MenuItem onClick={handleClose}>
-                    <Link
-                      href="/products"
-                      color="inherit"
-                      underline="none"
-                    >
-                      {t('all')}
+                    <Link href="/products" color="inherit" underline="none">
+                      {t("all")}
                     </Link>
                   </MenuItem>
 
@@ -278,16 +274,54 @@ const Header = () => {
                   }}
                   sx={{ display: { xs: "flex", md: "none" } }}
                 >
-                  <MenuItem>
-                    <Link href="/login" color="inherit" underline="none">
-                      {t("login")}
-                    </Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <Link href="/signup" color="inherit" underline="none">
-                      {t("signup")}
-                    </Link>
-                  </MenuItem>
+                  {!localStorage.getItem("user") ? (
+                    <Box>
+                      <MenuItem>
+                        <Link href="/login" color="inherit" underline="none">
+                          {t("login")}
+                        </Link>
+                      </MenuItem>
+                      <MenuItem>
+                        <Link href="/signup" color="inherit" underline="none">
+                          {t("signup")}
+                        </Link>
+                      </MenuItem>
+                    </Box>
+                  ) : (
+                    <Box>
+                      <MenuItem>
+                        <Link
+                          href="/account"
+                          color="inherit"
+                          underline="none"
+                          sx={{ textTransform: "capitalize" }}
+                        >
+                          {t("account")}
+                        </Link>
+                      </MenuItem>
+                      <MenuItem>
+                        <Link
+                          href="/orders"
+                          color="inherit"
+                          underline="none"
+                          sx={{ textTransform: "capitalize" }}
+                        >
+                          {t("orderHistory")}
+                        </Link>
+                      </MenuItem>
+
+                      <MenuItem>
+                        <Link
+                          onClick={handleLogout}
+                          color="inherit"
+                          underline="none"
+                          sx={{ textTransform: "capitalize" }}
+                        >
+                          {t("logout")}
+                        </Link>
+                      </MenuItem>
+                    </Box>
+                  )}
                 </Menu>
               </StyledIconButton>
 
@@ -402,7 +436,7 @@ const Header = () => {
                     aria-expanded={Boolean(accountEl) ? "true" : undefined}
                     endIcon={<KeyboardArrowDownIcon />}
                   >
-                    <StyledLink href="/account" underline="none">
+                    <StyledLink underline="none">
                       {localStorage.getItem("user") ? (
                         <Typography variant="body1">
                           {localStorage.getItem("username")}
@@ -442,12 +476,39 @@ const Header = () => {
                         </MenuItem>
                       </Box>
                     ) : (
-                      <MenuItem>
-                        <Button onClick={handleLogout}>{t("logout")}</Button>
-                        {/* <Link href="/" color="inherit" underline="none">
-                          
-                        </Link> */}
-                      </MenuItem>
+                      <Box>
+                        <MenuItem>
+                          <Link
+                            href="/account"
+                            color="inherit"
+                            underline="none"
+                            sx={{ textTransform: "capitalize" }}
+                          >
+                            {t("account")}
+                          </Link>
+                        </MenuItem>
+                        <MenuItem>
+                          <Link
+                            href="/orders"
+                            color="inherit"
+                            underline="none"
+                            sx={{ textTransform: "capitalize" }}
+                          >
+                            {t("orderHistory")}
+                          </Link>
+                        </MenuItem>
+
+                        <MenuItem>
+                          <Link
+                            onClick={handleLogout}
+                            color="inherit"
+                            underline="none"
+                            sx={{ textTransform: "capitalize" }}
+                          >
+                            {t("logout")}
+                          </Link>
+                        </MenuItem>
+                      </Box>
                     )}
                   </Menu>
                 </StyledIconButton>

@@ -25,6 +25,7 @@ function ScrollToTopButton() {
   }, []);
 
   return (
+    <>
     <IconButton
       sx={{
         backgroundColor: "#0e5fd9",
@@ -38,12 +39,36 @@ function ScrollToTopButton() {
           backgroundColor: "#0e5fd9",
           opacity: 0.8,
         },
+        flexGrow: 1,
+        display: { xs: "none", md: "flex" },
       }}
       className={`scroll-to-top ${isVisible ? "visible" : ""}`}
       onClick={scrollToTop}
     >
       <ArrowUpwardIcon fontSize="large" />
     </IconButton>
+    <IconButton
+    sx={{
+      backgroundColor: "#0e5fd9",
+      opacity: 0.2,
+      color: "white",
+
+      position: "fixed",
+      bottom: 0,
+      right: 15,
+      "&:hover": {
+        backgroundColor: "#0e5fd9",
+        opacity: 0.3,
+      },
+      flexGrow: 1,
+      display: { xs: "flex", md: "none" },
+    }}
+    className={`scroll-to-top ${isVisible ? "visible" : ""}`}
+    onClick={scrollToTop}
+  >
+    <ArrowUpwardIcon fontSize="normal" />
+  </IconButton>
+  </>
   );
 }
 export default ScrollToTopButton;

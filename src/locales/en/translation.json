@@ -39,5 +39,20 @@
   "communication": "Communication",
   "newsletter": "Newsletter subscription",
   "legalInformation": "Legal Information",
-  "follow": "Follow us"
+  "follow": "Follow us",
+  "remove": "Remove",
+  "placeOrder": "Place order",
+  "orderHistory":"Order History",
+  "totalPrice": "Total Price",
+  "orderId": "Order ID",
+  "product":"Product",
+  "emptyCart":"Your cart is empty!",
+  "goShopping": "Go shopping",
+  "continueShopping": "Continue shopping",
+  "notLoggedIn":"You are not logged in",
+  "noAccount":"Don't have an account?",
+  "haveAccount":"Do you already have an account?",
+  "address": "Address",
+  "orderDetails": "Order details",
+  "orderReceived": "Your order has been received!"
 }

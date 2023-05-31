@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Footer from "./Components/Fragments/Footer";
 import Header from "./Components/Fragments/Header";
@@ -15,6 +15,7 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Users from "./Pages/Users";
 import ScrollToTopButton from "./Components/Fragments/ScrollToTopButton";
+import OrderHistory from "./Pages/OrderHistory";
 function App() {
   return (
     <Router>
@@ -27,12 +28,13 @@ function App() {
         <Route path="/promotions" element={<Promotions />} />
         <Route path="/support" element={<Support />} />
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/cart" element={ <Cart />} />
         <Route path="/account" element={<Account />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/users" element={<Users />} />
         <Route path="/product" element={<Product />} />
+        <Route path="/orders" element={<OrderHistory />} />
       </Routes>
       <ScrollToTopButton />
       <Footer />

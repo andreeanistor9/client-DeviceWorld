@@ -57,7 +57,7 @@ function Home() {
         </Grid>
       </Box>
 
-      <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+      <Box sx={{ flexGrow: 1, paddingBottom:"10%", display: { xs: "none", md: "flex" } }}>
         <Grid xs={1}></Grid>
         <Grid xs={10}>
           <Carousel>

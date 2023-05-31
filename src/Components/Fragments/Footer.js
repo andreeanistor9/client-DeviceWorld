@@ -11,8 +11,13 @@ const Footer = () => {
         container
         sx={{
           display: { xs: "none", md: "flex" },
-          padding: 1,
+          position: "static",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          padding: '1rem',
           backgroundColor: "#86a4d6",
+       
         }}
       >
         <Grid item xs={1}></Grid>

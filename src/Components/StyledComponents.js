@@ -21,6 +21,10 @@ export const AddCartButton = styled(Button)({
   "&:hover, &:focus, &:active": {
     backgroundColor: "#315ea8",
   },
+  "&:disabled": {
+    backgroundColor:"#86a4d6",
+    color:"#edf2f9"
+  }
 });
 export const Navbar = styled(AppBar)({
   backgroundColor: "#537ec5",
