@@ -10,26 +10,52 @@ import {
   OutlinedInput,
   InputLabel,
   FormControl,
+  Link,
+  IconButton,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import ArrowRightAltOutlinedIcon from "@mui/icons-material/ArrowRightAltOutlined";
-function Cart() {
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import Slider from "../Components/Fragments/Slider";
+function Cart({ updateCart }) {
   const { t } = useTranslation();
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [orderDetails, setOrderDetails] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [address, setAddress] = useState("");
+  const [products, setProducts] = useState([]);
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
   useEffect(() => {
     fetchCart();
+  }, []);
+  useEffect(() => {
+    updateCart();
   }, []);
 
   const fetchCart = async () => {
     try {
-      const response = await fetch("/cart");
-      const jsonData = await response.json();
-      setCartItems(jsonData.cartItems);
-      calculateTotalPrice(jsonData.cartItems);
+      const response1 = await fetch("/cart");
+      const jsonData1 = await response1.json();
+      setCartItems(jsonData1.cartItems || []);
+
+      calculateTotalPrice(jsonData1.cartItems);
+      const response2 = await fetch("/products");
+      const jsonData2 = await response2.json();
+      setProducts(jsonData2.products || []);
+      const prod = jsonData2.products.filter((product) =>
+        jsonData1.cartItems.some(
+          (item) =>
+            item.brand === product.brand &&
+            item.product_type !== product.product_type
+        )
+      );
+
+      console.log(prod);
+      console.log(jsonData1.cartItems);
+      console.log(jsonData2.products);
+      setRecommendedProducts(prod);
     } catch (error) {
       console.error("Error fetching cart:", error);
     }
@@ -42,10 +68,12 @@ function Cart() {
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ quantity: 1 }),
       });
 
       if (response.ok) {
         fetchCart();
+        updateCart();
       } else {
         console.error("Error removing product from cart:", response.status);
       }
@@ -79,13 +107,38 @@ function Cart() {
       console.error("Error placing order:", error);
     }
   };
+  const updateQuantity = async (productId, quantity) => {
+    try {
+      const response = await fetch(`/cart/update/${productId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ quantity }),
+      });
+
+      if (response.ok) {
+        fetchCart(); // Fetch the updated cart and quantity
+      } else {
+        console.error("Failed to update product quantity in cart.");
+      }
+    } catch (error) {
+      console.error("Error updating product quantity:", error);
+    }
+  };
   const calculateTotalPrice = (items) => {
-    const total = items.reduce((sum, item) => sum + parseInt(item.price), 0);
+    const total = items.reduce(
+      (sum, item) => sum + parseFloat(item.price) * parseInt(item.quantity),
+      0
+    );
     setTotalPrice(total);
   };
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   return (
-    <Grid container sx={{ mt: 2}}>
+    <Grid container sx={{ mt: 2 }}>
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
         <Grid item xs={1}></Grid>
         <Grid item xs={10}>
@@ -137,6 +190,7 @@ function Cart() {
                           onChange={(e) => setAddress(e.target.value)}
                         />
                       </FormControl>
+
                       <Button
                         type="submit"
                         variant="contained"
@@ -160,6 +214,7 @@ function Cart() {
                         justifyContent="space-evenly"
                         alignItems="center"
                         spacing={10}
+                        sx={{ padding: 10 }}
                       >
                         <Typography variant="h5">
                           {t("orderReceived")}
@@ -182,8 +237,9 @@ function Cart() {
                         direction="column"
                         justifyContent="space-evenly"
                         alignItems="center"
+                        sx={{ padding: 10 }}
                       >
-                        <Typography variant="h5" sx={{ mt: 20 }}>
+                        <Typography variant="h5">
                           {t("emptyCart")} <ArrowRightAltOutlinedIcon />
                           <Button
                             href="/products"
@@ -218,25 +274,70 @@ function Cart() {
 
           {cartItems.map((item) => (
             <Grid container key={item.productId} sx={{ ml: 5 }}>
-              <Grid item xs={4}>
-                <Typography sx={{ padding: 1 }}>{item.name}</Typography>
+              <Grid item xs={2}>
+                <img
+                  src={`/images/products/${item.photo}`}
+                  width="70%"
+                  alt={item.productId}
+                />
               </Grid>
               <Grid item xs={2}>
-                <Typography sx={{ padding: 1 }}>
-                  {t("price")}: {item.price}RON{" "}
+                <Link
+                  href={`/product/${item.productId}`}
+                  sx={{ textDecoration: "none" }}
+                >
+                  <Typography sx={{ mt: 5 }}>{item.name}</Typography>
+                </Link>
+              </Grid>
+              <Grid item xs={1}>
+                <Typography
+                  sx={{ mt: 5, textAlign: "right", fontWeight: "bold" }}
+                >
+                  {item.price}RON{" "}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Button
-                  variant="outlined"
-                  onClick={() => removeFromCart(item.productId)}
-                  size="small"
-                >
-                  {t("remove")}
-                </Button>
+              <Grid item xs={1}></Grid>
+              <Grid item xs={6} sx={{ mt: 5 }}>
+                <Stack direction="row">
+                  <Button
+                    variant="outlined"
+                    onClick={() => removeFromCart(item.productId)}
+                    size="small"
+                  >
+                    {t("remove")}
+                  </Button>
+                  <Stack direction="row">
+                    <Box>
+                      <Button
+                        onClick={() =>
+                          item.quantity >= 1
+                            ? updateQuantity(item.productId, item.quantity + 1)
+                            : updateQuantity(item.productId, 1)
+                        }
+                      >
+                        <AddIcon />
+                      </Button>
+
+                      {item.quantity}
+
+                      <Button
+                        onClick={() =>
+                          item.quantity > 1
+                            ? updateQuantity(item.productId, item.quantity - 1)
+                            : removeFromCart(item.productId)
+                        }
+                      >
+                        <RemoveIcon />
+                      </Button>
+                    </Box>
+                  </Stack>
+                </Stack>
               </Grid>
             </Grid>
           ))}
+          {recommendedProducts && (
+            <Slider items={recommendedProducts} cart={true} />
+          )}
         </Grid>
       </Box>
       <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -303,26 +404,26 @@ function Cart() {
               <>
                 {orderPlaced ? (
                   <Grid container>
-                    <Grid item xs="3"></Grid>
-                    <Grid item xs="6">
+                    <Grid item xs="1"></Grid>
+                    <Grid item xs="10">
                       <Stack
                         direction="column"
                         justifyContent="space-evenly"
                         alignItems="center"
                         spacing={10}
+                        sx={{ padding: 5 }}
                       >
-                        <Typography variant="h5" sx={{ mt: 5 }}>
+                        <Typography variant="h5">
                           {t("orderReceived")}
                         </Typography>
                         <img
                           src="/images/things/orderReceived.png"
-                          width="40%"
+                          width="60%"
                           alt="order_received"
-                          sx={{ padding: 5 }}
                         />
                       </Stack>
                     </Grid>
-                    <Grid item xs="3"></Grid>
+                    <Grid item xs="1"></Grid>
                   </Grid>
                 ) : (
                   <Grid container>
@@ -334,12 +435,9 @@ function Cart() {
                         alignItems="center"
                         spacing={5}
                       >
-                       <Typography sx={{ mt: 5 }}>
+                        <Typography sx={{ mt: 5 }}>
                           {t("emptyCart")} <ArrowRightAltOutlinedIcon />
-                          <Button
-                            href="/products"
-                            variant="outlined"
-                          >
+                          <Button href="/products" variant="outlined">
                             {t("goShopping")}
                           </Button>
                         </Typography>
@@ -371,14 +469,23 @@ function Cart() {
           {cartItems.map((item) => (
             <Grid container key={item.productId} sx={{ ml: 5, mt: 3 }}>
               <Grid item xs={4}>
-                <Typography sx={{ padding: 1 }}>{item.name}</Typography>
+                <img
+                  src={`/images/products/${item.photo}`}
+                  width="70%"
+                  alt={item.productId}
+                />
               </Grid>
               <Grid item xs={4}>
-                <Typography sx={{ padding: 1, fontWeight: "bold" }}>
-                  {item.price} RON
-                </Typography>
+                <Stack sx={{ mt: 1 }}>
+                  <Link href={`/product/${item.productId}`}>
+                    <Typography sx={{ padding: 1 }}>{item.name}</Typography>
+                  </Link>
+                  <Typography sx={{ padding: 1, fontWeight: "bold" }}>
+                    {item.price} RON
+                  </Typography>
+                </Stack>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={4} sx={{ mt: 2 }}>
                 <Button
                   variant="outlined"
                   onClick={() => removeFromCart(item.productId)}
@@ -386,9 +493,34 @@ function Cart() {
                 >
                   {t("remove")}
                 </Button>
+
+                <Box>
+                  <IconButton
+                    onClick={() =>
+                      item.quantity >= 1
+                        ? updateQuantity(item.productId, item.quantity - 1)
+                        : removeFromCart(item.productId)
+                    }
+                  >
+                    <RemoveIcon fontSize="small" />
+                  </IconButton>
+                  {item.quantity}
+                  <IconButton
+                    onClick={() =>
+                      item.quantity >= 1
+                        ? updateQuantity(item.productId, item.quantity + 1)
+                        : updateQuantity(item.productId, 1)
+                    }
+                  >
+                    <AddIcon fontSize="small" />
+                  </IconButton>
+                </Box>
               </Grid>
             </Grid>
           ))}
+          {recommendedProducts && (
+            <Slider items={recommendedProducts} cart={true} />
+          )}
         </Grid>
       </Box>
     </Grid>

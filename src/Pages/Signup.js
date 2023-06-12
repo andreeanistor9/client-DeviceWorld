@@ -11,7 +11,7 @@ import {
   Checkbox,
   FormControlLabel,
   Input,
-  Link
+  Link,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -31,52 +31,88 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = React.useState(false);
+  const [usernameError, setUsernameError] = useState(false);
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
+  const firstNameRegex = /^[A-Za-z\s-]+$/;
+  const lastNameRegex = /^[A-Za-z\s-]+$/;
+  const usernameRegex = /^[A-Za-z0-9_.]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex =
+    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]+$/;
+
   const validationButton = () => {
     if (
-      username === "" ||
-      firstName === "" ||
-      lastName === "" ||
-      email === "" ||
-      password === "" ||
-      confirmPassword === "" ||
+      !firstName.match(firstNameRegex) ||
+      !lastName.match(lastNameRegex) ||
+      !username.match(usernameRegex) ||
+      !email.match(emailRegex) ||
+      !password.match(passwordRegex) ||
       password !== confirmPassword
     ) {
       return false;
     }
     return true;
   };
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+    setUsernameError(!e.target.value.match(usernameRegex));
+  };
 
+  const handleFirstNameChange = (e) => {
+    setFirstName(e.target.value);
+    setFirstNameError(!e.target.value.match(firstNameRegex));
+  };
+
+  const handleLastNameChange = (e) => {
+    setLastName(e.target.value);
+    setLastNameError(!e.target.value.match(lastNameRegex));
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setEmailError(!e.target.value.match(emailRegex));
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setPasswordError(!e.target.value.match(passwordRegex));
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    setConfirmPasswordError(e.target.value !== password);
+  };
   const submitSignup = async (e) => {
     e.preventDefault();
     try {
-      const body = {username, firstName, lastName, email, password};
-      if(password === confirmPassword){
-      const response = await fetch("/signup", {
-        method:"POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(body)
-      })
-      const data = await response.json();
-      if(data.loggedIn){
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("username", data.user.username);
-        navigate("/");
-        window.location.reload(false);
-      }else{
-        alert(data.status);
+      const body = { username, firstName, lastName, email, password };
+      if (password === confirmPassword) {
+        const response = await fetch("/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const data = await response.json();
+        if (data.loggedIn) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          localStorage.setItem("username", data.user.username);
+          navigate("/");
+          window.location.reload(false);
+        } else {
+          alert(data.status);
+        }
+      } else {
+        alert("Different passwords");
       }
-    }
-    else {
-      alert("parolele nu coincid")
-    }
     } catch (err) {
-      console.error(err.message); 
+      console.error(err.message);
     }
   };
 
@@ -87,10 +123,10 @@ function Signup() {
         <Typography variant="h2" sx={{ textAlign: "center", padding: 5 }}>
           {t("createAccount")}
         </Typography>
-        <Typography sx={{ textAlign: "center" }}> 
-              {t("haveAccount")} <ArrowRightAltOutlinedIcon />{" "}
-              <Link href="/login">{t("login")}</Link>
-            </Typography>
+        <Typography sx={{ textAlign: "center" }}>
+          {t("haveAccount")} <ArrowRightAltOutlinedIcon />{" "}
+          <Link href="/login">{t("login")}</Link>
+        </Typography>
         <Box
           component="form"
           autoComplete="off"
@@ -98,7 +134,7 @@ function Signup() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            padding:2
+            padding: 2,
           }}
         >
           <Stack
@@ -116,7 +152,8 @@ function Signup() {
                 label={t("username")}
                 autoComplete="username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={handleUsernameChange}
+                error={usernameError}
               />
             </FormControl>
             <FormControl required fullWidth margin="normal">
@@ -127,7 +164,8 @@ function Signup() {
                 label={t("firstName")}
                 autoComplete="firstName"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={handleFirstNameChange}
+                error={firstNameError}
               />
             </FormControl>
             <FormControl required fullWidth margin="normal">
@@ -138,7 +176,8 @@ function Signup() {
                 label={t("lastName")}
                 autoComplete="lastName"
                 value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                onChange={handleLastNameChange}
+                error={lastNameError}
               />
             </FormControl>
             <FormControl required fullWidth margin="normal">
@@ -149,10 +188,11 @@ function Signup() {
                 label={t("email")}
                 autoComplete="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
+                error={emailError}
               />
             </FormControl>
-            
+
             <FormControl required fullWidth margin="normal">
               <InputLabel htmlFor="password">{t("password")}</InputLabel>
               <OutlinedInput
@@ -160,7 +200,8 @@ function Signup() {
                 autoComplete="password"
                 value={password}
                 label={t("password")}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
+                error={passwordError}
                 type={showPassword ? "text" : "password"}
                 endAdornment={
                   showPassword ? (
@@ -190,7 +231,8 @@ function Signup() {
                 autoComplete="confirmPassword"
                 value={confirmPassword}
                 label={t("confirmPassword")}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={handleConfirmPasswordChange}
+                error={confirmPasswordError}
                 type={showPassword ? "text" : "password"}
                 endAdornment={
                   showPassword ? (
@@ -222,7 +264,6 @@ function Signup() {
             >
               {t("signup")}
             </Button>
-            
           </Stack>
         </Box>
       </Grid>

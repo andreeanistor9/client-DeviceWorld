@@ -20,6 +20,7 @@ import {
   Link,
   FormGroup,
   FormControlLabel,
+  Fab,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import {
@@ -33,13 +34,14 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
 import SearchIcon from "@mui/icons-material/Search";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import Product from "./Product";
-function Products() {
+import { useLocation } from "react-router-dom";
+function Products({ updateCart }) {
   const { t } = useTranslation();
-  const [searchedEl, setSearchedEl] = useState("");
-  const [price, setPrice] = useState(0);
-  const [checked, setChecked] = useState(false);
-  const [selectedColors, setSelectedColors] = useState([]);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortField, setSortField] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [products, setProducts] = useState([]);
   const [brandOptions, setBrandOptions] = useState([]);
@@ -60,8 +62,13 @@ function Products() {
   const currentType = new URLSearchParams(window.location.search).get("type");
   const colors = [];
   const [cartItems, setCartItems] = useState([]);
+  const [wishlistItems, setWishlistItems] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [showOrder, setShowOrder] = useState(false);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const searchQuery = queryParams.get("search");
+
   const getProducts = async (type, brand) => {
     try {
       let url = "/products";
@@ -95,9 +102,6 @@ function Products() {
   const handleChangeBrand = (event) => {
     setSelectedBrand(event.target.value);
   };
-  const handleChangeSearch = (event) => {
-    setSearchedEl(event.target.value);
-  };
 
   const handlePriceRangeToggle = (value) => {
     const selectedIndex = selectedPriceRanges.indexOf(value);
@@ -116,11 +120,34 @@ function Products() {
 
   const filterProducts = () => {
     let filteredProducts = products;
-    if (searchedEl !== "") {
+    if (sortField === "price") {
+      filteredProducts = filteredProducts.sort((a, b) => {
+        console.log(sortOrder);
+        if (sortOrder === "desc") {
+          return a.price - b.price;
+        } else {
+          return b.price - a.price;
+        }
+      });
+    } else if (sortField === "name") {
+      filteredProducts = filteredProducts.sort((a, b) => {
+        if (sortOrder === "desc") {
+          return a.name.localeCompare(b.name);
+        } else {
+          return b.name.localeCompare(a.name);
+        }
+      });
+    } else if (sortField === "") {
+      filteredProducts = filteredProducts.sort((a, b) => {
+        return a.id - b.id;
+      });
+    }
+    if (searchQuery) {
       filteredProducts = filteredProducts.filter((product) =>
-        product.name.toLowerCase().includes(searchedEl.toLowerCase())
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
+
     if (selectedBrand) {
       filteredProducts = filteredProducts.filter(
         (product) => product.brand.toLowerCase() === selectedBrand.toLowerCase()
@@ -144,23 +171,90 @@ function Products() {
     setFilteredProducts(filteredProducts);
   };
   const handleResetFilters = () => {
-    setSearchedEl("");
+    setSortOrder("asc");
+    setSortField("");
     setSelectedBrand("");
     setSelectedPriceRanges([]);
     setResetFilters(!resetFilters);
   };
+
   useEffect(() => {
     filterProducts();
-  }, [products, searchedEl, selectedBrand, selectedPriceRanges, resetFilters]);
-  const handleAddToCart = (productId, name, price) => {
-    const cartItem = { productId, name, price };
+  }, [
+    products,
+    sortField,
+    sortOrder,
+    searchQuery,
+    selectedBrand,
+    selectedPriceRanges,
+    resetFilters,
+  ]);
+  useEffect(() => {
+    updateCart();
+  }, []);
+  const handleAddToCart = (
+    productId,
+    name,
+    price,
+    photo,
+    quantity,
+    brand,
+    product_type
+  ) => {
+    const cartItem = {
+      productId,
+      name,
+      price,
+      photo,
+      quantity,
+      brand,
+      product_type,
+    };
     setCartItems((prevCartItems) => [...prevCartItems, cartItem]);
+
     fetch("/cart/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ productId, name, price }),
+      body: JSON.stringify({
+        productId,
+        name,
+        price,
+        photo,
+        quantity,
+        brand,
+        product_type,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Failed to add item to cart");
+        }
+      })
+      .then((data) => {
+        console.log(data.message);
+        updateCart();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  const handleAddToWishlist = (productId, name, price, photo) => {
+    const wishlistItem = { productId, name, price, photo };
+    setWishlistItems((prevWishlistItems) => [
+      ...prevWishlistItems,
+      wishlistItem,
+    ]);
+    fetch("/wishlist/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ productId, name, price, photo }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -183,21 +277,30 @@ function Products() {
         <Grid item xs={1}></Grid>
         <Grid item xs={2} sx={{ mr: 5 }}>
           <Typography variant="h6">Filters</Typography>
-          <TextField
-            id="search"
-            type="search"
-            label={t("search")}
-            value={searchedEl}
-            onChange={handleChangeSearch}
-            sx={{ width: "100%", mt: 3 }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          ></TextField>
+          <FormControl sx={{ mt: 5, width: "100%" }}>
+            <InputLabel>{t("SortBy")}</InputLabel>
+            <Select
+              value={sortField}
+              label={t("SortBy")}
+              onChange={(event) => setSortField(event.target.value)}
+            >
+              <MenuItem value="">{t("none")}</MenuItem>
+              <MenuItem value="price">{t("price")}</MenuItem>
+              <MenuItem value="name">{t("name")}</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl sx={{ mt: 5, width: "100%" }}>
+            <InputLabel>{t("SortOrder")}</InputLabel>
+            <Select
+              value={sortOrder}
+              label={t("SortOrder")}
+              onChange={(event) => setSortOrder(event.target.value)}
+            >
+              <MenuItem value="asc">{t("asc")}</MenuItem>
+              <MenuItem value="desc">{t("desc")}</MenuItem>
+            </Select>
+          </FormControl>
           <Typography variant="body1" sx={{ mt: 5 }}>
             {t("price")}
           </Typography>
@@ -256,11 +359,21 @@ function Products() {
               filteredProducts.map((product, i) => (
                 <Grid item xs={4}>
                   <StyledList>
-                    <IconButton sx={{ color: "red" }}>
+                    <IconButton
+                      sx={{ color: "red" }}
+                      onClick={() =>
+                        handleAddToWishlist(
+                          product.id,
+                          product.name,
+                          product.price,
+                          product.image
+                        )
+                      }
+                    >
                       <FavoriteBorderIcon fontSize="medium" />
                     </IconButton>
                     <StyledListItem key={product.image}>
-                      <Button href={`product`}>
+                      <Button href={`/product/${product.id}`}>
                         <img
                           src={`/images/products/${product.image}`}
                           width="100%"
@@ -277,30 +390,32 @@ function Products() {
 
                     <StyledListItem key={product.id}>
                       {localStorage.getItem("user") ? (
-                        <AddCartButton
-                          sx={{ backgroundColor: "#537ec5", color: "white" }}
-                          onClick={() =>
-                            handleAddToCart(
-                              product.id,
-                              product.name,
-                              product.price
-                            )
-                          }
-                        >
-                          <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
-                          {t("add_cart")}
-                        </AddCartButton>
+                        <Stack>
+                          <AddCartButton
+                            sx={{
+                              backgroundColor: "#537ec5",
+                              color: "white",
+                            }}
+                            onClick={() =>
+                              handleAddToCart(
+                                product.id,
+                                product.name,
+                                product.price,
+                                product.image,
+                                1,
+                                product.brand,
+                                product.product_type
+                              )
+                            }
+                          >
+                            <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
+                            {t("add_cart")}
+                          </AddCartButton>
+                        </Stack>
                       ) : (
                         <AddCartButton
                           disabled
                           sx={{ backgroundColor: "#537ec5", color: "white" }}
-                          onClick={() =>
-                            handleAddToCart(
-                              product.id,
-                              product.name,
-                              product.price
-                            )
-                          }
                         >
                           <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
                           {t("add_cart")}
@@ -341,25 +456,8 @@ function Products() {
           </Stack>
           {showFilters && (
             <Stack>
-              <TextField
-                id="search"
-                type="search"
-                label={t("search")}
-                value={searchedEl}
-                onChange={handleChangeSearch}
-                sx={{ width: "100%", mt: 3 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              ></TextField>
-              <Typography variant="body1" sx={{ mt: 5 }}>
-                {t("price")}
-              </Typography>
-              <FormControl sx={{ m: 1, width: "100%" }}>
+              <FormControl sx={{ m: 5, width: "100%" }}>
+                <Typography variant="body1">{t("price")}</Typography>
                 <FormGroup>
                   {priceRangeOptions.map((option) => (
                     <FormControlLabel
@@ -377,7 +475,7 @@ function Products() {
                   ))}
                 </FormGroup>
               </FormControl>
-              <FormControl sx={{ mt: 5, width: "100%" }}>
+              <FormControl sx={{ ml: 5, mr: 5, width: "80%" }}>
                 <InputLabel>{t("brand")}</InputLabel>
                 <Select
                   value={selectedBrand}
@@ -413,25 +511,32 @@ function Products() {
             </Stack>
           )}
           {showOrder && (
-            <Stack>
-              <FormControl sx={{ m:5, width: "100%" }}>
-                <FormGroup>
-                  {orderOptions.map((option) => (
-                    <FormControlLabel
-                      key={option.value}
-                      control={
-                        <Checkbox
-                          checked={
-                            selectedPriceRanges.indexOf(option.value) > -1
-                          }
-                          onChange={() => handlePriceRangeToggle(option.value)}
-                        />
-                      }
-                      label={option.label}
-                    />
-                  ))}
-                </FormGroup>
+            <>
+              <FormControl sx={{ m: 5, width: "80%" }}>
+                <InputLabel>{t("SortBy")}</InputLabel>
+                <Select
+                  value={sortField}
+                  label={t("SortBy")}
+                  onChange={(event) => setSortField(event.target.value)}
+                >
+                  <MenuItem value="">{t("none")}</MenuItem>
+                  <MenuItem value="price">{t("price")}</MenuItem>
+                  <MenuItem value="name">{t("name")}</MenuItem>
+                </Select>
               </FormControl>
+
+              <FormControl sx={{ ml: 5, mr: 5, width: "80%" }}>
+                <InputLabel>{t("SortOrder")}</InputLabel>
+                <Select
+                  value={sortOrder}
+                  label={t("SortOrder")}
+                  onChange={(event) => setSortOrder(event.target.value)}
+                >
+                  <MenuItem value="asc">{t("asc")}</MenuItem>
+                  <MenuItem value="desc">{t("desc")}</MenuItem>
+                </Select>
+              </FormControl>
+
               <Button
                 variant="contained"
                 onClick={handleToggleOrder}
@@ -439,7 +544,7 @@ function Products() {
               >
                 Save
               </Button>
-            </Stack>
+            </>
           )}
           {!filteredProducts ? (
             <p>{t("loading")}...</p>
@@ -448,17 +553,26 @@ function Products() {
           ) : (
             filteredProducts.map((product, i) => (
               <List>
-                <IconButton sx={{ color: "red" }}>
+                <IconButton
+                  sx={{ color: "red" }}
+                  onClick={() =>
+                    handleAddToWishlist(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.image
+                    )
+                  }
+                >
                   <FavoriteBorderIcon fontSize="medium" />
                 </IconButton>
                 <StyledListItem key={product.image}>
-                  <Button href={`/product/${product.id}`} >
+                  <Button href={`/product/${product.id}`}>
                     <img
                       src={`/images/products/${product.image}`}
                       width="100%"
                       alt={`product${i + 1}`}
                     />
-                   
                   </Button>
                 </StyledListItem>
                 <StyledListItem key={product.name}>
@@ -470,22 +584,29 @@ function Products() {
 
                 <StyledListItem key={product.id}>
                   {localStorage.getItem("user") ? (
-                    <AddCartButton
-                      sx={{ backgroundColor: "#537ec5", color: "white" }}
-                      onClick={() =>
-                        handleAddToCart(product.id, product.name, product.price)
-                      }
-                    >
-                      <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
-                      {t("add_cart")}
-                    </AddCartButton>
+                    <Stack>
+                      <AddCartButton
+                        sx={{ backgroundColor: "#537ec5", color: "white" }}
+                        onClick={() =>
+                          handleAddToCart(
+                            product.id,
+                            product.name,
+                            product.price,
+                            product.image,
+                            1,
+                            product.brand,
+                            product.product_type
+                          )
+                        }
+                      >
+                        <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
+                        {t("add_cart")}
+                      </AddCartButton>
+                    </Stack>
                   ) : (
                     <AddCartButton
                       disabled
                       sx={{ backgroundColor: "#537ec5", color: "white" }}
-                      onClick={() =>
-                        handleAddToCart(product.id, product.name, product.price)
-                      }
                     >
                       <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
                       {t("add_cart")}

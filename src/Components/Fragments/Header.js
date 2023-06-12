@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Toolbar,
   Typography,
@@ -11,6 +11,7 @@ import {
   TextField,
   InputAdornment,
   Grid,
+  Badge,
 } from "@mui/material";
 import DevicesIcon from "@mui/icons-material/Devices";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -22,19 +23,20 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { StyledIconButton, Navbar, StyledLink } from "../StyledComponents";
 import LanguageSelector from "../LanguageSelector";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-const Header = () => {
+
+const Header = ({ searchedEl, setSearchedEl, handleSearchSubmit, badgeNr }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [accountEl, setAccountEl] = useState(null);
-  const [searchedEl, setSearchedEl] = useState("");
+  //const [searchedEl, setSearchedEl] = useState("");
 
   const open = Boolean(anchorEl);
   const openNav = Boolean(anchorElNav);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -55,6 +57,9 @@ const Header = () => {
   };
   const handleSearch = (event) => {
     setSearchedEl(event.currentTarget.value);
+  };
+  const handleSearchSubmitHeader = () => {
+    handleSearchSubmit(searchedEl);
   };
   const handleLogout = async () => {
     //alert("ne delogam")
@@ -125,6 +130,27 @@ const Header = () => {
                       {t("support")}
                     </Link>
                   </Button>
+
+                  {localStorage.getItem("role") === "admin" ? (
+                    <>
+                      <Button color="inherit">
+                        <Link href="/users" color="inherit" underline="none">
+                          {t("users")}
+                        </Link>
+                      </Button>
+                      <Button color="inherit">
+                        <Link
+                          href="/adminProducts"
+                          color="inherit"
+                          underline="none"
+                        >
+                          {t("manageProducts")}
+                        </Link>
+                      </Button>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </Stack>
                 <Menu
                   id="products-menu"
@@ -242,7 +268,9 @@ const Header = () => {
                 aria-label="cart"
               >
                 <StyledLink href="/cart" underline="none">
-                  <ShoppingCartOutlinedIcon fontSize="inherit" />
+                  <Badge badgeContent={badgeNr} color="primary">
+                    <ShoppingCartOutlinedIcon fontSize="inherit" />
+                  </Badge>
                 </StyledLink>
               </StyledIconButton>
 
@@ -345,7 +373,7 @@ const Header = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon />
+                      <SearchIcon onClick={handleSearchSubmitHeader} />
                     </InputAdornment>
                   ),
                 }}
@@ -388,11 +416,16 @@ const Header = () => {
                   label={t("search")}
                   value={searchedEl}
                   onChange={handleSearch}
+                  onKeyPress={(event) => {
+                    if (event.key === "Enter") {
+                      handleSearchSubmitHeader();
+                    }
+                  }}
                   sx={{ flexGrow: 1, width: "100%", m: 3 }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <SearchIcon />
+                        <SearchIcon onClick={handleSearchSubmitHeader} />
                       </InputAdornment>
                     ),
                   }}
@@ -415,7 +448,9 @@ const Header = () => {
                   aria-label="cart"
                   sx={{ flexGrow: 1 }}
                 >
-                  <ShoppingCartOutlinedIcon fontSize="inherit" />
+                  <Badge badgeContent={badgeNr} color="primary">
+                    <ShoppingCartOutlinedIcon fontSize="inherit" />
+                  </Badge>
                   <StyledLink href="/cart" underline="none">
                     <Typography variant="body1"> {t("cart")}</Typography>
                   </StyledLink>
@@ -438,11 +473,19 @@ const Header = () => {
                   >
                     <StyledLink underline="none">
                       {localStorage.getItem("user") ? (
-                        <Typography variant="body1">
+                        <Typography
+                          variant="body1"
+                          sx={{ textTransform: "lowercase" }}
+                        >
                           {localStorage.getItem("username")}
                         </Typography>
                       ) : (
-                        <Typography variant="body1"> {t("account")}</Typography>
+                        <Typography
+                          variant="body1"
+                          sx={{ textTransform: "capitalize" }}
+                        >
+                          {t("account")}
+                        </Typography>
                       )}
                     </StyledLink>
                   </Button>
@@ -547,6 +590,26 @@ const Header = () => {
                   {t("support")}
                 </StyledLink>
               </Button>
+              {localStorage.getItem("role") === "admin" ? (
+                <>
+                  <Button color="inherit">
+                    <Link href="/users" color="inherit" underline="none">
+                      {t("users")}
+                    </Link>
+                  </Button>
+                  <Button color="inherit">
+                    <Link
+                      href="/adminProducts"
+                      color="inherit"
+                      underline="none"
+                    >
+                      {t("manageProducts")}
+                    </Link>
+                  </Button>
+                </>
+              ) : (
+                <></>
+              )}
             </Grid>
             <Grid item xs={1}></Grid>
           </Grid>

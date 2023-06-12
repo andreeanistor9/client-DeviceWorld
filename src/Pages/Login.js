@@ -8,7 +8,7 @@ import {
   FormControl,
   IconButton,
   Button,
-  Link
+  Link,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -42,10 +42,14 @@ function Login() {
         body: JSON.stringify(body),
       });
       const data = await response.json();
+
       if (data.loggedIn) {
         console.log("login succcessful");
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("username", username);
+        localStorage.setItem("first_name", data.user.first_name);
+        localStorage.setItem("last_name", data.user.last_name);
+        localStorage.setItem("role", data.user.role);
         navigate("/");
         window.location.reload();
       } else {
@@ -58,7 +62,7 @@ function Login() {
     }
   };
   return (
-    <Grid container sx={{paddingBottom:"10%"}}>
+    <Grid container sx={{ paddingBottom: "10%" }}>
       <Grid item xs={1}></Grid>
       <Grid item xs={10}>
         <Typography variant="h2" sx={{ textAlign: "center", padding: 5 }}>
@@ -71,7 +75,6 @@ function Login() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            
           }}
         >
           <Stack
