@@ -79,5 +79,8 @@
   "suggestions": "Your choice would also fit with...",
   "order": "Order",
   "save": "Save",
-  "reset": "Reset"
+  "reset": "Reset",
+  "only": "Only",
+  "left": "left",
+  "out_of_stock": "Out of stock"
 }

@@ -7,37 +7,26 @@ import {
   Box,
   Stack,
   List,
-  TextField,
-  InputAdornment,
-  Slider,
   Checkbox,
   FormControl,
   MenuItem,
-  ListItemText,
-  OutlinedInput,
   InputLabel,
   Select,
-  Link,
   FormGroup,
   FormControlLabel,
-  Fab,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import {
   AddCartButton,
   StyledListItem,
   StyledList,
-  StyledIconButton,
 } from "../Components/StyledComponents";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import Product from "./Product";
 import { useLocation } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
 function Products({ updateCart }) {
   const { t } = useTranslation();
   const [sortOrder, setSortOrder] = useState("asc");
@@ -389,7 +378,7 @@ function Products({ updateCart }) {
                     </StyledListItem>
 
                     <StyledListItem key={product.id}>
-                      {localStorage.getItem("user") ? (
+                      {localStorage.getItem("user") && product.quantity > 0 ? (
                         <Stack>
                           <AddCartButton
                             sx={{

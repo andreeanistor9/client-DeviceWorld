@@ -27,7 +27,7 @@ function Support() {
         </Typography>
         <img
           src="images/things/customer-support.jpg"
-          alte="support"
+          alt="support"
           width="100%"
         />
       </Grid>

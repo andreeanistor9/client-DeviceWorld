@@ -79,5 +79,8 @@
   "suggestions": "Alegerea ta s-ar potrivi cu...",
   "order": "Ordoneaza",
   "save": "Salveaza",
-  "reset": "Reseteaza"
+  "reset": "Reseteaza",
+  "only": "Doar",
+  "left": "ramase",
+  "out_of_stock": "Produsul nu este in stoc"
 }

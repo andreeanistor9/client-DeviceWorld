@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import {
   Grid,
   Typography,
-  IconButton,
   TableCell,
   Table,
   TableBody,
@@ -16,7 +15,7 @@ import {
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { AddCartButton } from "../Components/StyledComponents";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-
+// eslint-disable-next-line no-unused-vars
 function Product({ updateCart }) {
   const { t } = useTranslation();
   const params = useParams();
@@ -117,37 +116,124 @@ function Product({ updateCart }) {
           <Typography variant="h6" color="red" sx={{ mt: 10, mb: 3 }}>
             {product.price}Lei
           </Typography>
-          <AddCartButton
-            sx={{ width: "150%" }}
-            onClick={() =>
-              handleAddToCart(
-                product.id,
-                product.name,
-                product.price,
-                product.image,
-                1
-              )
-            }
-          >
-            <ShoppingCartOutlinedIcon fontSize="medium" /> {t("add_cart")}
-          </AddCartButton>
-          <Button
-            variant="outlined"
-            sx={{ width: "150%", mt: 1 }}
-            onClick={() =>
-              handleAddToWishlist(
-                product.id,
-                product.name,
-                product.price,
-                product.image
-              )
-            }
-          >
-            <Typography sx={{ color: "red" }}>
-              <FavoriteBorderIcon fontSize="medium" />
-            </Typography>
-            <Typography variant="button">{t("add_wishlist")}</Typography>
-          </Button>
+          {localStorage.getItem("user") ? (
+            product.quantity > 0 ? (
+              <>
+                <AddCartButton
+                  sx={{ width: "150%" }}
+                  onClick={() =>
+                    handleAddToCart(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.image,
+                      1
+                    )
+                  }
+                >
+                  <ShoppingCartOutlinedIcon fontSize="medium" /> {t("add_cart")}
+                </AddCartButton>
+                <Button
+                  variant="outlined"
+                  sx={{ width: "150%", mt: 1 }}
+                  onClick={() =>
+                    handleAddToWishlist(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.image
+                    )
+                  }
+                >
+                  <Typography sx={{ color: "red" }}>
+                    <FavoriteBorderIcon fontSize="medium" />
+                  </Typography>
+                  <Typography variant="button">{t("add_wishlist")}</Typography>
+                </Button>
+                {product.quantity <= 3 && (
+                  <Typography sx={{ color: "red" }}>
+                    {t("only")} {product.quantity} {t("left")}
+                  </Typography>
+                )}
+              </>
+            ) : (
+              <>
+                <AddCartButton
+                  sx={{ width: "150%" }}
+                  disabled
+                  onClick={() =>
+                    handleAddToCart(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.image,
+                      1
+                    )
+                  }
+                >
+                  <ShoppingCartOutlinedIcon fontSize="medium" /> {t("add_cart")}
+                </AddCartButton>
+                <Button
+                  variant="outlined"
+                  sx={{ width: "150%", mt: 1 }}
+                  disabled
+                  onClick={() =>
+                    handleAddToWishlist(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.image
+                    )
+                  }
+                >
+                  <Typography sx={{ color: "red" }}>
+                    <FavoriteBorderIcon fontSize="medium" />
+                  </Typography>
+                  <Typography variant="button">{t("add_wishlist")}</Typography>
+                </Button>
+
+                <Typography sx={{ color: "red" }}>
+                  {t("out_of_stock")}
+                </Typography>
+              </>
+            )
+          ) : (
+            <>
+              <AddCartButton
+                sx={{ width: "150%" }}
+                disabled
+                onClick={() =>
+                  handleAddToCart(
+                    product.id,
+                    product.name,
+                    product.price,
+                    product.image,
+                    1
+                  )
+                }
+              >
+                <ShoppingCartOutlinedIcon fontSize="medium" /> {t("add_cart")}
+              </AddCartButton>
+              <Button
+                variant="outlined"
+                sx={{ width: "150%", mt: 1 }}
+                disabled
+                onClick={() =>
+                  handleAddToWishlist(
+                    product.id,
+                    product.name,
+                    product.price,
+                    product.image
+                  )
+                }
+              >
+                <Typography sx={{ color: "red" }}>
+                  <FavoriteBorderIcon fontSize="medium" />
+                </Typography>
+                <Typography variant="button">{t("add_wishlist")}</Typography>
+              </Button>
+            </>
+          )}
         </Stack>
       </Grid>
       <Grid item xs={10} sx={{ display: { xs: "flex", md: "none" } }}>
@@ -161,37 +247,124 @@ function Product({ updateCart }) {
           <Typography variant="h6" color="red" sx={{ mt: 5 }}>
             {product.price}Lei
           </Typography>
-          <AddCartButton
-            sx={{ width: "100%" }}
-            onClick={() =>
-              handleAddToCart(
-                product.id,
-                product.name,
-                product.price,
-                product.image,
-                1
-              )
-            }
-          >
-            <ShoppingCartOutlinedIcon fontSize="medium" /> {t("add_cart")}
-          </AddCartButton>
-          <Button
-            variant="outlined"
-            sx={{ width: "100%", m: 1 }}
-            onClick={() =>
-              handleAddToWishlist(
-                product.id,
-                product.name,
-                product.price,
-                product.image
-              )
-            }
-          >
-            <Typography sx={{ color: "red" }}>
-              <FavoriteBorderIcon fontSize="medium" />
-            </Typography>
-            <Typography variant="button">{t("add_wishlist")}</Typography>
-          </Button>
+          {localStorage.getItem("user") ? (
+            product.quantity > 0 ? (
+              <>
+                <AddCartButton
+                  sx={{ width: "100%" }}
+                  onClick={() =>
+                    handleAddToCart(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.image,
+                      1
+                    )
+                  }
+                >
+                  <ShoppingCartOutlinedIcon fontSize="medium" /> {t("add_cart")}
+                </AddCartButton>
+                <Button
+                  variant="outlined"
+                  sx={{ width: "100%", m: 1 }}
+                  onClick={() =>
+                    handleAddToWishlist(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.image
+                    )
+                  }
+                >
+                  <Typography sx={{ color: "red" }}>
+                    <FavoriteBorderIcon fontSize="medium" />
+                  </Typography>
+                  <Typography variant="button">{t("add_wishlist")}</Typography>
+                </Button>
+                {product.quantity <= 3 && (
+                  <Typography sx={{ color: "red" }}>
+                    {t("only")} {product.quantity} {t("left")}
+                  </Typography>
+                )}
+              </>
+            ) : (
+              <>
+                <AddCartButton
+                  sx={{ width: "100%" }}
+                  disabled
+                  onClick={() =>
+                    handleAddToCart(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.image,
+                      1
+                    )
+                  }
+                >
+                  <ShoppingCartOutlinedIcon fontSize="medium" /> {t("add_cart")}
+                </AddCartButton>
+                <Button
+                  variant="outlined"
+                  sx={{ width: "100%", m: 1 }}
+                  disabled
+                  onClick={() =>
+                    handleAddToWishlist(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.image
+                    )
+                  }
+                >
+                  <Typography sx={{ color: "red" }}>
+                    <FavoriteBorderIcon fontSize="medium" />
+                  </Typography>
+                  <Typography variant="button">{t("add_wishlist")}</Typography>
+                </Button>
+
+                <Typography sx={{ color: "red" }}>
+                  {t("out_of_stock")}
+                </Typography>
+              </>
+            )
+          ) : (
+            <>
+              <AddCartButton
+                sx={{ width: "100%" }}
+                disabled
+                onClick={() =>
+                  handleAddToCart(
+                    product.id,
+                    product.name,
+                    product.price,
+                    product.image,
+                    1
+                  )
+                }
+              >
+                <ShoppingCartOutlinedIcon fontSize="medium" /> {t("add_cart")}
+              </AddCartButton>
+              <Button
+                variant="outlined"
+                sx={{ width: "100%", m: 1 }}
+                disabled
+                onClick={() =>
+                  handleAddToWishlist(
+                    product.id,
+                    product.name,
+                    product.price,
+                    product.image
+                  )
+                }
+              >
+                <Typography sx={{ color: "red" }}>
+                  <FavoriteBorderIcon fontSize="medium" />
+                </Typography>
+                <Typography variant="button">{t("add_wishlist")}</Typography>
+              </Button>
+            </>
+          )}
         </Stack>
       </Grid>
       <Grid item xs={1}></Grid>

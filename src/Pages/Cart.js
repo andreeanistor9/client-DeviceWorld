@@ -5,8 +5,6 @@ import {
   Button,
   Box,
   Stack,
-  List,
-  ListItem,
   OutlinedInput,
   InputLabel,
   FormControl,
@@ -127,10 +125,12 @@ function Cart({ updateCart }) {
     }
   };
   const calculateTotalPrice = (items) => {
-    const total = items.reduce(
-      (sum, item) => sum + parseFloat(item.price) * parseInt(item.quantity),
-      0
-    );
+    const total = items
+      .reduce(
+        (sum, item) => sum + parseFloat(item.price) * parseInt(item.quantity),
+        0
+      )
+      .toFixed(2);
     setTotalPrice(total);
   };
   useEffect(() => {
@@ -309,11 +309,20 @@ function Cart({ updateCart }) {
                   <Stack direction="row">
                     <Box>
                       <Button
-                        onClick={() =>
-                          item.quantity >= 1
-                            ? updateQuantity(item.productId, item.quantity + 1)
-                            : updateQuantity(item.productId, 1)
-                        }
+                        onClick={() => {
+                          products.map((product) => {
+                            if (product.id === item.productId) {
+                              if (product.quantity > item.quantity) {
+                                item.quantity >= 1
+                                  ? updateQuantity(
+                                      item.productId,
+                                      item.quantity + 1
+                                    )
+                                  : updateQuantity(item.productId, 1);
+                              }
+                            }
+                          });
+                        }}
                       >
                         <AddIcon />
                       </Button>
@@ -496,18 +505,21 @@ function Cart({ updateCart }) {
 
                 <Box>
                   <IconButton
-                    onClick={() =>
-                      item.quantity >= 1
+                    onClick={() => {
+                      let totalQuantity = products.map((product) =>
+                        product.id === item.productId ? product.quantity : 0
+                      );
+                      item.quantity >= 1 && totalQuantity > item.quantity
                         ? updateQuantity(item.productId, item.quantity - 1)
-                        : removeFromCart(item.productId)
-                    }
+                        : removeFromCart(item.productId);
+                    }}
                   >
                     <RemoveIcon fontSize="small" />
                   </IconButton>
                   {item.quantity}
                   <IconButton
                     onClick={() =>
-                      item.quantity >= 1
+                      item.quantity > 1
                         ? updateQuantity(item.productId, item.quantity + 1)
                         : updateQuantity(item.productId, 1)
                     }

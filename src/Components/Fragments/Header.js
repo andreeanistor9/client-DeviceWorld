@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Toolbar,
   Typography,
@@ -113,7 +113,7 @@ const Header = ({ searchedEl, setSearchedEl, handleSearchSubmit, badgeNr }) => {
                       color="inherit"
                       id="products-Link"
                       onClick={handleClick}
-                      aria-control={open ? "products-menu" : undefined}
+                      aria-controls={open ? "products-menu" : undefined}
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
                     >

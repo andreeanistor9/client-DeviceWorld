@@ -14,11 +14,10 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+
 const AddNewProduct = ({ setShowAddNewProduct, addNewProduct }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");

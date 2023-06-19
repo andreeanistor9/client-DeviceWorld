@@ -1,19 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Typography,
-  Box,
-  ListItem,
-  List,
-  Stack,
-  Button,
-} from "@mui/material";
+import { Grid, Typography, ListItem, List, Stack, Button } from "@mui/material";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { useTranslation } from "react-i18next";
 import {
   PDFDownloadLink,
-  PDFViewer,
   Document,
   Page,
   Text,

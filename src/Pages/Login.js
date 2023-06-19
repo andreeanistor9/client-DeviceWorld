@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
-  TextField,
   Grid,
   Typography,
   Stack,
   FormControl,
-  IconButton,
   Button,
   Link,
 } from "@mui/material";
@@ -25,12 +23,7 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = React.useState(false);
-  const [user, setUser] = useState();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
 
   const loginUser = async (e) => {
     try {

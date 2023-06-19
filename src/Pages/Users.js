@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
   Grid,
-  Typography,
   Table,
   TableHead,
   TableBody,
   TableRow,
   TableCell,
-  Button,
   IconButton,
   TextField,
 } from "@mui/material";
@@ -25,7 +23,7 @@ function Users() {
     try {
       const response = await fetch("/users");
       const jsonData = await response.json();
-      setUsers(jsonData);
+      setUsers(jsonData.allUsers);
     } catch (err) {
       console.error(err.message);
     }
@@ -61,7 +59,7 @@ function Users() {
       if (response.ok) {
         const updatedUserData = await response.json();
         const updatedUsers = users.map((user) =>
-          user.id == userId ? updatedUserData : user
+          user.id === userId ? updatedUserData : user
         );
         setUsers(updatedUsers);
         toggleEdit(userId);

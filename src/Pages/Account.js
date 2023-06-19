@@ -1,20 +1,40 @@
-import React from 'react'
-import { Grid, Typography } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import OrderHistory from "./OrderHistory";
+import React, { useEffect, useState } from "react";
+import { Grid, Stack, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 function Account() {
-  const {t} = useTranslation();
-  return (
-    <Grid container sx={{m:2}}>
+  const { t } = useTranslation();
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    getUsers();
+  }, []);
+  const getUsers = async () => {
+    try {
+      const response = await fetch("/users");
+      const jsonData = await response.json();
+      setUser(jsonData.current_user);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
-    <Grid item xs={1}></Grid>
-    <Grid item xs={10} >
-      <Typography variant="h6">{t("account")}</Typography>
-      <Typography variant="p1">{localStorage.getItem("username")}</Typography>
-      <OrderHistory />
-       </Grid>
+  return (
+    <Grid container sx={{ m: 2 }}>
+      <Grid item xs={1}></Grid>
+      <Grid item xs={10}>
+        <Typography variant="h6">{t("account")}</Typography>
+        {/* <Typography variant="p1">{localStorage.getItem("username")}</Typography> */}
+        {user && (
+          <Stack key={user.id}>
+            <Typography variant="body1">
+              {user.first_name} {user.last_name}
+            </Typography>
+            <Typography variant="body1">{user.username}</Typography>
+            <Typography variant="body1">{user.email}</Typography>
+          </Stack>
+        )}
+      </Grid>
     </Grid>
-  )
+  );
 }
 
-export default Account
+export default Account;

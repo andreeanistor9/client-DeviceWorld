@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Grid, Stack, Box, Link, Paper } from "@mui/material";
+import { Typography, Grid, Stack, Box, Link } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { FacebookOutlined, Instagram, LinkedIn } from "@mui/icons-material";
 
