@@ -62,7 +62,7 @@ function Login() {
     }
   };
   return (
-    <Grid container sx={{ paddingBottom: "10%" }}>
+    <Grid container sx={{ paddingBottom: "1.5%" }}>
       <Grid item xs={1}></Grid>
       <Grid item xs={10}>
         <Typography variant="h2" sx={{ textAlign: "center", padding: 5 }}>

@@ -15,9 +15,8 @@ const Footer = () => {
           bottom: 0,
           left: 0,
           width: "100%",
-          padding: '1rem',
+          padding: "1rem",
           backgroundColor: "#86a4d6",
-       
         }}
       >
         <Grid item xs={1}></Grid>
@@ -31,15 +30,6 @@ const Footer = () => {
               sx={{ padding: 2, backgroundColor: "rgba(151, 177, 220, 0.5)" }}
             >
               <Typography variant="h6">{t("customerSupport")}</Typography>
-              <Link
-                variant="body1"
-                href="/return_products"
-                underline="none"
-                color="inherit"
-              >
-                {" "}
-                {t("productReturn")}
-              </Link>
 
               <Typography variant="body1">
                 {" "}
@@ -106,12 +96,12 @@ const Footer = () => {
               <Typography variant="body1">
                 <Link
                   variant="body1"
-                  href="/private_policy"
+                  href="/privacy_policy"
                   underline="none"
                   color="inherit"
                 >
                   {" "}
-                  {t("privatePolicy")}
+                  {t("privacyPolicy")}
                 </Link>
               </Typography>
             </Box>
@@ -216,12 +206,12 @@ const Footer = () => {
           <Typography variant="body1">
             <Link
               variant="body1"
-              href="/private_policy"
+              href="/privacy_policy"
               underline="none"
               color="inherit"
             >
               {" "}
-              {t("privatePolicy")}
+              {t("privacyPolicy")}
             </Link>
           </Typography>
         </Box>

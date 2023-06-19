@@ -1,5 +1,5 @@
 {
-  "wishlist": "Favorite",
+  "wishlist": "Lista de dorinte",
   "cart": "Cos",
   "account": "Contul meu",
   "products": "Produse",
@@ -10,7 +10,7 @@
   "laptops": "Laptopuri",
   "tablets": "Tablete",
   "accessories": "Accesorii",
-  "login": "Logare",
+  "login": "Autentificare",
   "signup": "Inregistrare",
   "username": "Nume de utilizator",
   "password": "Parola",
@@ -21,7 +21,7 @@
   "confirmPassword": "Confirmare parola",
   "eyeProblem": "Aveti probleme de vedere?",
   "customerSupport": "Suport clienti",
-  "createAccount": "Creaza-ti contul",
+  "createAccount": "Creeaza un cont",
   "loading": "Se incarca",
   "search": "Cauta",
   "add_cart": "Adauga in cos",
@@ -35,7 +35,7 @@
   "productReturn": "Formular de returnare a produselor",
   "returnPolicy": "Politica de returnare a produselor",
   "terms": "Termene si conditii",
-  "privatePolicy": "Politca privata ",
+  "privacyPolicy": "Politca privata ",
   "contact": "Contact",
   "communication": "Comunicare",
   "newsletter": "Abonare la newsletter",
@@ -43,7 +43,7 @@
   "follow": "Urmareste-ne",
   "remove": "Sterge",
   "placeOrder": "Plaseaza comanda",
-  "orderHistory": "Comenzile tale",
+  "orderHistory": "Comenzi",
   "totalPrice": "Pret total",
   "orderId": "ID-ul comenzii",
   "product": "Produs",
@@ -76,5 +76,8 @@
   "SortOrder": "Ordonare",
   "specification": "Specificatie",
   "chooseImage": "Alege imagine",
-  "suggestions": "Alegerea ta s-ar potrivi cu..."
+  "suggestions": "Alegerea ta s-ar potrivi cu...",
+  "order": "Ordoneaza",
+  "save": "Salveaza",
+  "reset": "Reseteaza"
 }

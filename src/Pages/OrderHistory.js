@@ -110,56 +110,57 @@ function OrderHistory() {
           {t("orderHistory")}
         </Typography>
 
-        {orders.map((order) => (
-          <List key={order.id} sx={{ ml: 10 }}>
-            <Stack direction="row" spacing={15}>
-              <Typography sx={{ textTransform: "uppercase" }} variant="h6">
-                {t("orderId")}: {order.id}
+        {Array.isArray(orders) > 0 &&
+          orders.map((order) => (
+            <List key={order.id} sx={{ ml: 10 }}>
+              <Stack direction="row" spacing={15}>
+                <Typography sx={{ textTransform: "uppercase" }} variant="h6">
+                  {t("orderId")}: {order.id}
+                </Typography>
+                <PDFDownloadLink
+                  document={<OrderPDFDocument order={order} />}
+                  fileName={`order_${order.id}.pdf`}
+                >
+                  {({ loading }) =>
+                    loading ? (
+                      "Loading..."
+                    ) : (
+                      <Button variant="outlined">
+                        {t("receipt")}
+                        <FileDownloadIcon />
+                      </Button>
+                    )
+                  }
+                </PDFDownloadLink>
+              </Stack>
+              <Typography variant="h6">
+                {t("totalPrice")}: {order.total_price}
               </Typography>
-              <PDFDownloadLink
-                document={<OrderPDFDocument order={order} />}
-                fileName={`order_${order.id}.pdf`}
-              >
-                {({ loading }) =>
-                  loading ? (
-                    "Loading..."
-                  ) : (
-                    <Button variant="outlined">
-                      {t("receipt")}
-                      <FileDownloadIcon />
-                    </Button>
-                  )
-                }
-              </PDFDownloadLink>
-            </Stack>
-            <Typography variant="h6">
-              {t("totalPrice")}: {order.total_price}
-            </Typography>
-            <Typography sx={{ textTransform: "capitalize" }}>
-              {t("address")}: {order.address}
-            </Typography>
+              <Typography sx={{ textTransform: "capitalize" }}>
+                {t("address")}: {order.address}
+              </Typography>
 
-            {order.order_items.map((orderItem) => (
-              <ListItem key={orderItem.id}>
-                <img
-                  src={`/images/products/${orderItem.photo}`}
-                  width="20%"
-                  alt={orderItem.id}
-                />
-                <Stack>
-                  <Typography>
-                    {t("product")}: {orderItem.name}
-                  </Typography>
-                  <Typography>{orderItem.price} RON</Typography>
-                  <Typography>
-                    {orderItem.quantity} {t("quantity")}
-                    {console.log(orderItem.quantity)}
-                  </Typography>
-                </Stack>
-              </ListItem>
-            ))}
-          </List>
-        ))}
+              {order.order_items.map((orderItem) => (
+                <ListItem key={orderItem.id}>
+                  <img
+                    src={`/images/products/${orderItem.photo}`}
+                    width="40%"
+                    alt={orderItem.id}
+                  />
+                  <Stack>
+                    <Typography>
+                      {t("product")}: {orderItem.name}
+                    </Typography>
+                    <Typography>{orderItem.price} RON</Typography>
+                    <Typography>
+                      {orderItem.quantity} {t("quantity")}
+                      {console.log(orderItem.quantity)}
+                    </Typography>
+                  </Stack>
+                </ListItem>
+              ))}
+            </List>
+          ))}
       </Grid>
     </Grid>
   );

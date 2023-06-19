@@ -107,38 +107,39 @@ const Header = ({ searchedEl, setSearchedEl, handleSearchSubmit, badgeNr }) => {
                 }}
               >
                 <Stack direction="column" spacing={1}>
-                  <Button
-                    color="inherit"
-                    id="products-button"
-                    onClick={handleClick}
-                    // aria-control={open ? "products-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? "true" : undefined}
-                    endIcon={<KeyboardArrowRightIcon />}
-                  >
-                    {" "}
-                    {t("products")}
-                  </Button>
-
-                  <Button color="inherit">
+                  <MenuItem>
+                    <Link
+                      underline="none"
+                      color="inherit"
+                      id="products-Link"
+                      onClick={handleClick}
+                      aria-control={open ? "products-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                    >
+                      {" "}
+                      {t("products")}
+                      <KeyboardArrowRightIcon sx={{ ml: 10 }} />
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
                     <Link href="/brands" color="inherit" underline="none">
                       {t("brands")}
                     </Link>
-                  </Button>
-                  <Button color="inherit">
+                  </MenuItem>
+                  <MenuItem>
                     <Link href="/support" color="inherit" underline="none">
                       {t("support")}
                     </Link>
-                  </Button>
-
+                  </MenuItem>
                   {localStorage.getItem("role") === "admin" ? (
                     <>
-                      <Button color="inherit">
+                      <MenuItem>
                         <Link href="/users" color="inherit" underline="none">
                           {t("users")}
                         </Link>
-                      </Button>
-                      <Button color="inherit">
+                      </MenuItem>
+                      <MenuItem>
                         <Link
                           href="/adminProducts"
                           color="inherit"
@@ -146,7 +147,7 @@ const Header = ({ searchedEl, setSearchedEl, handleSearchSubmit, badgeNr }) => {
                         >
                           {t("manageProducts")}
                         </Link>
-                      </Button>
+                      </MenuItem>
                     </>
                   ) : (
                     <></>

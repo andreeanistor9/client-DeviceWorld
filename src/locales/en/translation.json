@@ -35,7 +35,7 @@
   "productReturn": "Product return form",
   "returnPolicy": "Return Policy",
   "terms": "Terms and Condition",
-  "privatePolicy": "Private Policy",
+  "privacyPolicy": "Privacy Policy",
   "contact": "Contact",
   "communication": "Communication",
   "newsletter": "Newsletter subscription",
@@ -43,7 +43,7 @@
   "follow": "Follow us",
   "remove": "Remove",
   "placeOrder": "Place order",
-  "orderHistory": "Order History",
+  "orderHistory": "Orders",
   "totalPrice": "Total Price",
   "orderId": "Order ID",
   "product": "Product",
@@ -76,5 +76,8 @@
   "SortOrder": "Sort Order",
   "specification": "Specification",
   "chooseImage": "Choose image",
-  "suggestions": "Your choice would also fit with..."
+  "suggestions": "Your choice would also fit with...",
+  "order": "Order",
+  "save": "Save",
+  "reset": "Reset"
 }

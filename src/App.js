@@ -23,6 +23,8 @@ import Users from "./Pages/Users";
 import ScrollToTopButton from "./Components/Fragments/ScrollToTopButton";
 import OrderHistory from "./Pages/OrderHistory";
 import AdminProducts from "./Pages/AdminProducts";
+import TermsAndConditions from "./Pages/TermsAndConditions";
+import PrivacyPolicy from "./Pages/PrivacyPolicy";
 
 function App() {
   const [searchedEl, setSearchedEl] = useState("");
@@ -66,7 +68,10 @@ function App() {
         />
         <Route path="/promotions" element={<Promotions />} />
         <Route path="/support" element={<Support />} />
-        <Route path="/wishlist" element={<Wishlist />} />
+        <Route
+          path="/wishlist"
+          element={<Wishlist updateCart={updateCart} />}
+        />
         <Route path="/cart" element={<Cart updateCart={updateCart} />} />
         <Route path="/account" element={<Account />} />
         <Route path="/login" element={<Login />} />
@@ -75,6 +80,8 @@ function App() {
         <Route path="/orders" element={<OrderHistory />} />
         <Route path="/users" element={<Users />} />
         <Route path="/adminProducts" element={<AdminProducts />} />
+        <Route path="/terms_conditions" element={<TermsAndConditions />} />
+        <Route path="/privacy_policy" element={<PrivacyPolicy />} />
       </Routes>
       <ScrollToTopButton />
       <Footer />

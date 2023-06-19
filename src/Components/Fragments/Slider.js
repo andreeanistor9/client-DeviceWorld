@@ -102,13 +102,13 @@ const Slider = ({ items, cart }) => {
           <Button onClick={handleScrollLeft}>&lt;</Button>
           <StyledList ref={scrollContainerRef}>
             {items.map((item, i) => (
-              <StyledListItem key={item.id}>
+              <ListItem key={item.id} sx={{ flex: "0 0 33%" }}>
                 <img
                   src={`/images/products/${item.image}`}
                   width="80%"
                   alt={`product${i + 1}`}
                 />
-              </StyledListItem>
+              </ListItem>
             ))}
           </StyledList>
           <Button onClick={handleScrollRight}>&gt;</Button>

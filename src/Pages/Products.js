@@ -276,7 +276,7 @@ function Products({ updateCart }) {
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
         <Grid item xs={1}></Grid>
         <Grid item xs={2} sx={{ mr: 5 }}>
-          <Typography variant="h6">Filters</Typography>
+          <Typography variant="h6">{t("filters")}</Typography>
           <FormControl sx={{ mt: 5, width: "100%" }}>
             <InputLabel>{t("SortBy")}</InputLabel>
             <Select
@@ -342,7 +342,7 @@ function Products({ updateCart }) {
             onClick={handleResetFilters}
             sx={{ mt: 5, ml: "25%" }}
           >
-            Reset Filters
+            {t("reset")}
           </Button>
         </Grid>
         <Grid item xs={8}>
@@ -447,11 +447,11 @@ function Products({ updateCart }) {
             {/* {t("products")} */}
             <Button variant="outlined" onClick={handleToggleFilters}>
               <FilterAltOutlinedIcon fontSize="large" />
-              <Typography>Filters</Typography>
+              <Typography>{t("filters")}</Typography>
             </Button>
             <Button variant="outlined" onClick={handleToggleOrder}>
               <SortOutlinedIcon fontSize="large" />
-              <Typography>Order</Typography>
+              <Typography>{t("order")}</Typography>
             </Button>
           </Stack>
           {showFilters && (
@@ -498,14 +498,14 @@ function Products({ updateCart }) {
                   onClick={handleResetFilters}
                   sx={{ m: 2 }}
                 >
-                  Reset Filters
+                  {t("reset")}
                 </Button>
                 <Button
                   variant="contained"
                   onClick={handleToggleFilters}
                   sx={{ m: 2 }}
                 >
-                  Save Filters
+                  {t("save")}
                 </Button>
               </Box>
             </Stack>
@@ -542,7 +542,7 @@ function Products({ updateCart }) {
                 onClick={handleToggleOrder}
                 sx={{ m: 2 }}
               >
-                Save
+                {t("save")}
               </Button>
             </>
           )}

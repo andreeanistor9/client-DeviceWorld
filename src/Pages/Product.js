@@ -17,7 +17,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { AddCartButton } from "../Components/StyledComponents";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
-function Product() {
+function Product({ updateCart }) {
   const { t } = useTranslation();
   const params = useParams();
   const { id } = params;
@@ -26,6 +26,9 @@ function Product() {
   const [isLoading, setIsLoading] = useState(true);
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
+  useEffect(() => {
+    updateCart();
+  }, []);
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -58,6 +61,7 @@ function Product() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data.message);
+        updateCart();
       })
       .catch((error) => {
         console.error("Error:", error);

@@ -138,7 +138,7 @@ function Cart({ updateCart }) {
   }, [cartItems]);
 
   return (
-    <Grid container sx={{ mt: 2 }}>
+    <Grid container sx={{ mt: 2, padding: 1 }}>
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
         <Grid item xs={1}></Grid>
         <Grid item xs={10}>

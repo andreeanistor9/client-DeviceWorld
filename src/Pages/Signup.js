@@ -92,12 +92,12 @@ function Signup() {
   const submitSignup = async (e) => {
     e.preventDefault();
     try {
-      const body = { username, firstName, lastName, email, password };
+      const user = { username, firstName, lastName, email, password };
       if (password === confirmPassword) {
         const response = await fetch("/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify(user),
         });
         const data = await response.json();
         if (data.loggedIn) {
