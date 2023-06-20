@@ -1,8 +1,10 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import Slider from "../Components/Fragments/Slider";
+import { useTranslation } from "react-i18next";
 function Home() {
+  const { t } = useTranslation();
   const products = [
     {
       id: "1",
@@ -10,14 +12,22 @@ function Home() {
     },
     {
       id: "2",
-      image: "macbookpro.png",
+      image: "sales.png",
     },
     {
       id: "3",
-      image: "airpodsmax.png",
+      image: "macbookpro.png",
     },
     {
       id: "4",
+      image: "airpodsmax.png",
+    },
+    {
+      id: "5",
+      image: "sales.png",
+    },
+    {
+      id: "6",
       image: "samsungtv.png",
     },
   ];
@@ -25,6 +35,15 @@ function Home() {
     <Grid container sx={{ paddingBottom: 6 }}>
       <Grid item xs={12}>
         <Slider items={products} cart={false} />
+        <Typography variant="h3" sx={{ textAlign: "center", padding: 5 }}>
+          {t("welcome_message")}
+        </Typography>
+        <Typography
+          variant="h6"
+          sx={{ textAlign: "center", paddingInline: 10 }}
+        >
+          {t("home_description")}
+        </Typography>
       </Grid>
     </Grid>
   );
