@@ -133,15 +133,33 @@ function AdminProducts() {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell>{t("name")}</TableCell>
-                <TableCell>{t("description")}</TableCell>
-                <TableCell>{t("old_price")}</TableCell>
-                <TableCell>{t("price")}</TableCell>
-                <TableCell>{t("brand")}</TableCell>
-                <TableCell>{t("type")}</TableCell>
-                <TableCell>{t("color")}</TableCell>
-                <TableCell>{t("quantity")}</TableCell>
-                <TableCell>{t("specifications")}</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("name")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("description")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("old_price")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("price")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("brand")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("type")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("color")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("quantity")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("specifications")}
+                </TableCell>
                 <TableCell></TableCell>
                 <TableCell></TableCell>
               </TableRow>

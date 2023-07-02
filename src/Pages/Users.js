@@ -109,15 +109,29 @@ function Users() {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell>{t("firstName")}</TableCell>
-                <TableCell>{t("lastName")}</TableCell>
-                <TableCell>{t("username")}</TableCell>
-                <TableCell>{t("email")}</TableCell>
-                <TableCell>{t("role")}</TableCell>
-                <TableCell>{t("wishlist")}</TableCell>
-                <TableCell>{t("cart")}</TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("firstName")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("lastName")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("username")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("email")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("role")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("wishlist")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  {t("cart")}
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}></TableCell>
+                <TableCell style={{ fontWeight: "bold" }}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

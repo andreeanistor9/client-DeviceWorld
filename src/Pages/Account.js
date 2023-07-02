@@ -22,7 +22,6 @@ function Account() {
       <Grid item xs={1}></Grid>
       <Grid item xs={10}>
         <Typography variant="h6">{t("account")}</Typography>
-        {/* <Typography variant="p1">{localStorage.getItem("username")}</Typography> */}
         {user && (
           <Stack key={user.id}>
             <Typography variant="body1">

@@ -95,9 +95,13 @@ function Signup() {
           body: JSON.stringify(user),
         });
         const data = await response.json();
+
         if (data.loggedIn) {
           localStorage.setItem("user", JSON.stringify(data.user));
           localStorage.setItem("username", data.user.username);
+          localStorage.setItem("first_name", data.user.first_name);
+          localStorage.setItem("last_name", data.user.last_name);
+          localStorage.setItem("role", data.user.role);
           navigate("/");
           window.location.reload(false);
         } else {
