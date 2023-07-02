@@ -125,7 +125,7 @@ function OrderHistory() {
                 </PDFDownloadLink>
               </Stack>
               <Typography variant="h6">
-                {t("totalPrice")}: {order.total_price}
+                {t("totalPrice")}: {order.total_price} RON
               </Typography>
               <Typography sx={{ textTransform: "capitalize" }}>
                 {t("address")}: {order.address}

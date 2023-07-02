@@ -101,9 +101,7 @@ function Product({ updateCart }) {
       <Grid item xs={1}></Grid>
       <Grid item xs={5} sx={{ display: { xs: "none", md: "flex" } }}>
         <Stack sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="h6">
-            {product.name}, {product.description}
-          </Typography>
+          <Typography variant="h6">{product.description}</Typography>
           <img
             src={`/images/products/${product.image}`}
             width="50%"
@@ -113,7 +111,7 @@ function Product({ updateCart }) {
       </Grid>
       <Grid item xs={5} sx={{ display: { xs: "none", md: "flex" } }}>
         <Stack>
-          <Typography variant="h6" color="red" sx={{ mt: 10, mb: 3 }}>
+          <Typography variant="h6" color="red" sx={{ mt: 18, mb: 3 }}>
             {product.price}Lei
           </Typography>
           {localStorage.getItem("user") ? (

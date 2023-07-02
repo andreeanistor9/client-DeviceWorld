@@ -343,7 +343,10 @@ function Products({ updateCart }) {
             {!filteredProducts ? (
               <p>{t("loading")}...</p>
             ) : filteredProducts.length === 0 ? (
-              <p>{t("no_products_found")}</p>
+              <img
+                src="/images/products/no-product-found.png"
+                alt="no-product-found"
+              />
             ) : (
               filteredProducts.map((product, i) => (
                 <Grid item xs={4}>

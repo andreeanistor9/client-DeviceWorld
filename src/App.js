@@ -18,7 +18,7 @@ import OrderHistory from "./Pages/OrderHistory";
 import AdminProducts from "./Pages/AdminProducts";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
-
+import "./App.css";
 function App() {
   const [searchedEl, setSearchedEl] = useState("");
 
@@ -40,44 +40,46 @@ function App() {
   };
 
   return (
-    <Router>
-      <Header
-        searchedEl={searchedEl}
-        setSearchedEl={setSearchedEl}
-        handleSearchSubmit={handleSearchSubmit}
-        badgeNr={badgeNr}
-      />
+    <div className="page-container">
+      <Router>
+        <Header
+          searchedEl={searchedEl}
+          setSearchedEl={setSearchedEl}
+          handleSearchSubmit={handleSearchSubmit}
+          badgeNr={badgeNr}
+        />
+        <Routes>
+          <Route path="/" element={<Home updateCart={updateCart} />} />
+          <Route path="/brands" element={<Brands />} />
+          <Route
+            path="/products"
+            element={<Products updateCart={updateCart} />}
+          />
+          <Route
+            path="/product/:id"
+            element={<Product updateCart={updateCart} />}
+          />
+          <Route path="/support" element={<Support />} />
+          <Route
+            path="/wishlist"
+            element={<Wishlist updateCart={updateCart} />}
+          />
+          <Route path="/cart" element={<Cart updateCart={updateCart} />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/orders" element={<OrderHistory />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/adminProducts" element={<AdminProducts />} />
+          <Route path="/terms_conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+        </Routes>
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/brands" element={<Brands />} />
-        <Route
-          path="/products"
-          element={<Products updateCart={updateCart} />}
-        />
-        <Route
-          path="/product/:id"
-          element={<Product updateCart={updateCart} />}
-        />
-        <Route path="/support" element={<Support />} />
-        <Route
-          path="/wishlist"
-          element={<Wishlist updateCart={updateCart} />}
-        />
-        <Route path="/cart" element={<Cart updateCart={updateCart} />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/orders" element={<OrderHistory />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/adminProducts" element={<AdminProducts />} />
-        <Route path="/terms_conditions" element={<TermsAndConditions />} />
-        <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-      </Routes>
-      <ScrollToTopButton />
-      <Footer />
-    </Router>
+        <ScrollToTopButton />
+        <Footer />
+      </Router>
+    </div>
   );
 }
 

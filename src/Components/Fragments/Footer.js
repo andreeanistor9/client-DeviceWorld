@@ -11,11 +11,8 @@ const Footer = () => {
         container
         sx={{
           display: { xs: "none", md: "flex" },
-          position: "static",
-          bottom: 0,
-          left: 0,
+          marginTop: "auto",
           width: "100%",
-          padding: "1rem",
           backgroundColor: "#86a4d6",
         }}
       >

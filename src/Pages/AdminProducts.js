@@ -51,6 +51,7 @@ function AdminProducts() {
       id: product.id,
       name: document.getElementById(`name-${productId}`).value,
       description: document.getElementById(`description-${productId}`).value,
+      old_price: document.getElementById(`old_price-${productId}`).value,
       price: document.getElementById(`price-${productId}`).value,
       brand: document.getElementById(`brand-${productId}`).value,
       product_type: document.getElementById(`product_type-${productId}`).value,
@@ -134,6 +135,7 @@ function AdminProducts() {
               <TableRow>
                 <TableCell>{t("name")}</TableCell>
                 <TableCell>{t("description")}</TableCell>
+                <TableCell>{t("old_price")}</TableCell>
                 <TableCell>{t("price")}</TableCell>
                 <TableCell>{t("brand")}</TableCell>
                 <TableCell>{t("type")}</TableCell>
@@ -172,11 +174,23 @@ function AdminProducts() {
                     <TableCell>
                       {editableRows[product.id] ? (
                         <TextField
+                          defaultValue={product.old_price}
+                          inputProps={{ id: `old_price-${product.id}` }}
+                        />
+                      ) : product.old_price ? (
+                        product.old_price + "RON"
+                      ) : (
+                        product.price + "RON"
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editableRows[product.id] ? (
+                        <TextField
                           defaultValue={product.price}
                           inputProps={{ id: `price-${product.id}` }}
                         />
                       ) : (
-                        product.price
+                        product.price + "RON"
                       )}
                     </TableCell>
                     <TableCell>

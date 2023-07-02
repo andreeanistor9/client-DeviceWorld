@@ -3,7 +3,7 @@ import { Grid, Typography, Button, Link, Stack, Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { AddCartButton } from "../Components/StyledComponents";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-
+import ArrowRightAltOutlinedIcon from "@mui/icons-material/ArrowRightAltOutlined";
 function Wishlist({ updateCart }) {
   const { t } = useTranslation();
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -62,66 +62,90 @@ function Wishlist({ updateCart }) {
   };
   return (
     <>
-      <Grid container sx={{ m: 2, display: { xs: "none", md: "flex" } }}>
+      <Grid container sx={{ mt: 2, display: { xs: "none", md: "flex" } }}>
         <Grid item xs={1}></Grid>
         <Grid item xs={10}>
           <Typography variant="h6">{t("wishlist")}</Typography>
-          {wishlistItems.length > 0 ? (
-            wishlistItems.map((item) => (
-              <Grid container key={item.productId} sx={{ ml: 5 }}>
-                <Grid item xs={2}>
-                  {console.log(item.photo)}
+
+          {localStorage.getItem("user") ? (
+            wishlistItems.length > 0 ? (
+              wishlistItems.map((item) => (
+                <Grid container key={item.productId} sx={{ ml: 5 }}>
+                  <Grid item xs={2}>
+                    {console.log(item.photo)}
+                    <img
+                      src={`/images/products/${item.photo}`}
+                      width="70%"
+                      alt={item.productId}
+                    />
+                  </Grid>
+                  <Grid item xs={2} sx={{ mt: 3 }}>
+                    <Link href={`/product/${item.productId}`}>
+                      <Typography sx={{ padding: 1 }}>{item.name}</Typography>
+                    </Link>
+                  </Grid>
+                  <Grid item xs={2} sx={{ mt: 3 }}>
+                    <Typography sx={{ padding: 1 }}>
+                      {item.price}RON{" "}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={3} sx={{ mt: 3 }}>
+                    <Stack direction="row" spacing={2}>
+                      <Button
+                        variant="outlined"
+                        onClick={() => removeFromWishlist(item.productId)}
+                        size="small"
+                      >
+                        {t("remove")}
+                      </Button>
+                      <AddCartButton
+                        sx={{ padding: 1 }}
+                        size="small"
+                        onClick={() =>
+                          handleAddToCart(
+                            item.productId,
+                            item.name,
+                            item.price,
+                            item.photo,
+                            1
+                          )
+                        }
+                      >
+                        <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
+                        {t("add_cart")}
+                      </AddCartButton>
+                    </Stack>
+                  </Grid>
+                </Grid>
+              ))
+            ) : (
+              <Grid container>
+                <Grid item xs={2}></Grid>
+                <Grid item xs={8}>
                   <img
-                    src={`/images/products/${item.photo}`}
-                    width="70%"
-                    alt={item.productId}
+                    src="/images/products/no-product-found.png"
+                    alt="no-product-found"
                   />
                 </Grid>
-                <Grid item xs={2} sx={{ mt: 3 }}>
-                  <Link href={`/product/${item.productId}`}>
-                    <Typography sx={{ padding: 1 }}>{item.name}</Typography>
-                  </Link>
-                </Grid>
-                <Grid item xs={2} sx={{ mt: 3 }}>
-                  <Typography sx={{ padding: 1 }}>{item.price}RON </Typography>
-                </Grid>
-
-                <Grid item xs={3} sx={{ mt: 3 }}>
-                  <Stack direction="row" spacing={2}>
-                    <Button
-                      variant="outlined"
-                      onClick={() => removeFromWishlist(item.productId)}
-                      size="small"
-                    >
-                      {t("remove")}
-                    </Button>
-                    <AddCartButton
-                      sx={{ padding: 1 }}
-                      size="small"
-                      onClick={() =>
-                        handleAddToCart(
-                          item.productId,
-                          item.name,
-                          item.price,
-                          item.photo,
-                          1
-                        )
-                      }
-                    >
-                      <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
-                      {t("add_cart")}
-                    </AddCartButton>
-                  </Stack>
-                </Grid>
+                <Grid item xs={2}></Grid>
               </Grid>
-            ))
+            )
           ) : (
-            <p>no items</p>
+            <Box>
+              <Typography variant="h6" sx={{ m: 5 }}>
+                {t("notLoggedIn")} <ArrowRightAltOutlinedIcon />
+                <Button href="/login" variant="outlined" sx={{ ml: 1 }}>
+                  {t("login")}
+                </Button>
+              </Typography>
+            </Box>
           )}
         </Grid>
       </Grid>
-      <Stack sx={{ display: { xs: "flex", md: "none" }, m: 1 }}>
+      <Stack sx={{ display: { xs: "flex", md: "none" }, mt: 1 }}>
         <Typography variant="h6">{t("wishlist")}</Typography>
+
         {wishlistItems.length > 0 ? (
           wishlistItems.map((item) => (
             <Grid container sx={{ mt: 5 }}>
@@ -168,7 +192,16 @@ function Wishlist({ updateCart }) {
             </Grid>
           ))
         ) : (
-          <p>no items</p>
+          <Grid container>
+            <Grid item xs={2}></Grid>
+            <Grid item xs={8}>
+              <img
+                src="/images/products/no-product-found.png"
+                alt="no-product-found"
+              />
+            </Grid>
+            <Grid item xs={2}></Grid>
+          </Grid>
         )}
       </Stack>
     </>
