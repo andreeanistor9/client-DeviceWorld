@@ -129,7 +129,7 @@ function Home({ updateCart }) {
       });
   };
   return (
-    <Grid container sx={{ paddingBottom: 6 }}>
+    <Grid container>
       <Grid item xs={12}>
         <Typography variant="h4" sx={{ textAlign: "center", padding: 5 }}>
           {t("welcome_message")}

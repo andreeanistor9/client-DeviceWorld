@@ -14,6 +14,7 @@ import {
   Select,
   FormGroup,
   FormControlLabel,
+  Pagination,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import {
@@ -26,6 +27,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import SortOutlinedIcon from "@mui/icons-material/SortOutlined";
 import { useLocation } from "react-router-dom";
+
 // eslint-disable-next-line no-unused-vars
 function Products({ updateCart }) {
   const { t } = useTranslation();
@@ -57,7 +59,9 @@ function Products({ updateCart }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const searchQuery = queryParams.get("search");
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(6);
+  const [paginatedProductsPage, setPaginatedProducts] = useState([]);
   const getProducts = async (type, brand) => {
     try {
       let url = "/products";
@@ -113,17 +117,17 @@ function Products({ updateCart }) {
       filteredProducts = filteredProducts.sort((a, b) => {
         console.log(sortOrder);
         if (sortOrder === "desc") {
-          return a.price - b.price;
-        } else {
           return b.price - a.price;
+        } else {
+          return a.price - b.price;
         }
       });
     } else if (sortField === "name") {
       filteredProducts = filteredProducts.sort((a, b) => {
         if (sortOrder === "desc") {
-          return a.name.localeCompare(b.name);
-        } else {
           return b.name.localeCompare(a.name);
+        } else {
+          return a.name.localeCompare(b.name);
         }
       });
     } else if (sortField === "") {
@@ -158,6 +162,17 @@ function Products({ updateCart }) {
       });
     }
     setFilteredProducts(filteredProducts);
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const paginatedProducts = filteredProducts.slice(
+      indexOfFirstProduct,
+      indexOfLastProduct
+    );
+
+    setPaginatedProducts(paginatedProducts);
+  };
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
   };
   const handleResetFilters = () => {
     setSortOrder("asc");
@@ -177,6 +192,7 @@ function Products({ updateCart }) {
     selectedBrand,
     selectedPriceRanges,
     resetFilters,
+    currentPage,
   ]);
   useEffect(() => {
     updateCart();
@@ -340,15 +356,15 @@ function Products({ updateCart }) {
             rowSpacing={1}
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           >
-            {!filteredProducts ? (
+            {!paginatedProductsPage ? (
               <p>{t("loading")}...</p>
-            ) : filteredProducts.length === 0 ? (
+            ) : paginatedProductsPage.length === 0 ? (
               <img
                 src="/images/products/no-product-found.png"
                 alt="no-product-found"
               />
             ) : (
-              filteredProducts.map((product, i) => (
+              paginatedProductsPage.map((product, i) => (
                 <Grid item xs={4}>
                   <StyledList>
                     <IconButton
@@ -419,6 +435,20 @@ function Products({ updateCart }) {
               ))
             )}
           </Grid>
+          <Pagination
+            count={Math.ceil(filteredProducts.length / productsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+            variant="outlined"
+            shape="rounded"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "2rem",
+            }}
+          />
         </Grid>
       </Box>
 

@@ -9,6 +9,7 @@ import {
   Button,
   IconButton,
   TextField,
+  Pagination,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import EditIcon from "@mui/icons-material/Edit";
@@ -21,6 +22,14 @@ function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [editableRows, setEditableRows] = useState({});
   const [showAddNewProduct, setShowAddNewProduct] = useState(false);
+  const [page, setPage] = useState(1);
+  const productsPerPage = 3;
+  const totalPages = Math.ceil(products.length / productsPerPage);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
   const handleAddNewProduct = () => {
     setShowAddNewProduct(true);
   };
@@ -37,7 +46,9 @@ function AdminProducts() {
       console.error(err.message);
     }
   };
-
+  const displayedProducts = products
+    .sort((a, b) => a.id - b.id)
+    .slice((page - 1) * productsPerPage, page * productsPerPage);
   const toggleEdit = (productId) => {
     setEditableRows((prevEditableRows) => ({
       ...prevEditableRows,
@@ -130,44 +141,43 @@ function AdminProducts() {
         {typeof products === "undefined" ? (
           <p>{t("loading")}...</p>
         ) : (
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("name")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("description")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("old_price")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("price")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("brand")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("type")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("color")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("quantity")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("specifications")}
-                </TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {products
-                .sort((a, b) => a.id - b.id)
-                .map((product) => (
+          <>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("name")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("description")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("old_price")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("price")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("brand")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("type")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("color")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("quantity")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("specifications")}
+                  </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {displayedProducts.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>
                       {editableRows[product.id] ? (
@@ -273,8 +283,23 @@ function AdminProducts() {
                     </TableCell>
                   </TableRow>
                 ))}
-            </TableBody>
-          </Table>
+              </TableBody>
+            </Table>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+              variant="outlined"
+              shape="rounded"
+              style={{
+                marginTop: "1rem",
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "1rem",
+              }}
+            />
+          </>
         )}
       </Grid>
     </Grid>

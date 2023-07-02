@@ -8,6 +8,7 @@ import {
   TableCell,
   IconButton,
   TextField,
+  Pagination,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import EditIcon from "@mui/icons-material/Edit";
@@ -18,6 +19,8 @@ function Users() {
   const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [editableRows, setEditableRows] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(3);
 
   const getUsers = async () => {
     try {
@@ -99,6 +102,17 @@ function Users() {
     getUsers();
   }, []);
 
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users
+    .sort((a, b) => a.id - b.id)
+    .slice(indexOfFirstUser, indexOfLastUser);
+
+  // Change page
+  const handlePageChange = (event, pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <Grid container sx={{ m: 2 }}>
       <Grid item xs={1}></Grid>
@@ -106,38 +120,37 @@ function Users() {
         {typeof users === "undefined" ? (
           <p>{t("loading")}...</p>
         ) : (
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("firstName")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("lastName")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("username")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("email")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("role")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("wishlist")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  {t("cart")}
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}></TableCell>
-                <TableCell style={{ fontWeight: "bold" }}></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users
-                .sort((a, b) => a.id - b.id)
-                .map((user) => (
+          <>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("firstName")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("lastName")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("username")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("email")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("role")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("wishlist")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}>
+                    {t("cart")}
+                  </TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}></TableCell>
+                  <TableCell style={{ fontWeight: "bold" }}></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentUsers.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell>
                       {editableRows[user.id] ? (
@@ -214,8 +227,23 @@ function Users() {
                     </TableCell>
                   </TableRow>
                 ))}
-            </TableBody>
-          </Table>
+              </TableBody>
+            </Table>
+            <Pagination
+              count={Math.ceil(users.length / usersPerPage)}
+              page={currentPage}
+              onChange={handlePageChange}
+              color="primary"
+              variant="outlined"
+              shape="rounded"
+              style={{
+                marginTop: "1rem",
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "1rem",
+              }}
+            />
+          </>
         )}
       </Grid>
     </Grid>

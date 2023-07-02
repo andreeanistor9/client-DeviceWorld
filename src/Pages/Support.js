@@ -5,8 +5,8 @@ function Support() {
   const { t } = useTranslation();
   return (
     <Grid container sx={{ mt: 2 }}>
-      <Grid item xs={1}></Grid>
-      <Grid item xs={10}>
+      <Grid item xs={3}></Grid>
+      <Grid item xs={6}>
         <Typography variant="h6">{t("support")}</Typography>
         <Typography variant="body1">
           {" "}
@@ -31,6 +31,7 @@ function Support() {
           width="100%"
         />
       </Grid>
+      <Grid item xs={3}></Grid>
     </Grid>
   );
 }
