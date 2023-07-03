@@ -1,20 +1,59 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { Grid, Typography, Button, IconButton, Stack } from "@mui/material";
 import Slider from "../Components/Fragments/Slider";
 import { useTranslation } from "react-i18next";
-import {
-  StyledList,
-  StyledListItem,
-  AddCartButton,
-} from "../Components/StyledComponents";
+import { AddCartButton } from "../Components/StyledComponents";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { styled } from "@mui/system";
+const StyledList = styled("List")({
+  listStyle: "none",
+  display: "flex",
+  overflowX: "hidden",
+  scrollBehavior: "smooth",
+  padding: 1,
+  margin: 0,
+  backgroundColor: "#edf2f9",
+});
+
+const StyledListItem = styled("ListItem")({
+  flex: "0 0 33%",
+  textAlign: "center",
+});
 function Home({ updateCart }) {
   const { t } = useTranslation();
   const [promotions, setPromotions] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollContainerRef = useRef(null);
+  const handleScrollRight = () => {
+    const scrollContainer = scrollContainerRef.current;
+    const scrollWidth = scrollContainer.scrollWidth;
+    const containerWidth = scrollContainer.offsetWidth;
+    const maxScrollPosition = scrollWidth - containerWidth;
+    const newScrollPosition = Math.min(
+      scrollPosition + containerWidth,
+      maxScrollPosition
+    );
+    setScrollPosition(newScrollPosition);
+    scrollContainer.scrollTo({
+      left: newScrollPosition,
+      behavior: "smooth",
+    });
+  };
+
+  const handleScrollLeft = () => {
+    const scrollContainer = scrollContainerRef.current;
+    const containerWidth = scrollContainer.offsetWidth;
+    const newScrollPosition = Math.max(scrollPosition - containerWidth, 0);
+    setScrollPosition(newScrollPosition);
+    scrollContainer.scrollTo({
+      left: newScrollPosition,
+      behavior: "smooth",
+    });
+  };
   const slide = [
     {
       id: "1",
@@ -145,32 +184,46 @@ function Home({ updateCart }) {
       {promotions.length > 0 && (
         <Grid item xs={12}>
           <Typography
-            variant="h5"
-            sx={{ paddingInline: 5, mt: 5, color: "red", fontWeight: "bold" }}
+            variant="h4"
+            sx={{ paddingInline: 10, mt: 5, color: "red", fontWeight: "bold" }}
           >
             {t("promotions")}
           </Typography>
         </Grid>
       )}
-      {promotions.length > 0 &&
-        promotions.map((product, i) =>
-          product.old_price && product.old_price > product.price ? (
-            <Grid item xs={3} sx={{ padding: 5 }}>
-              <StyledList>
-                <IconButton
-                  sx={{ color: "red" }}
-                  onClick={() =>
-                    handleAddToWishlist(
-                      product.id,
-                      product.name,
-                      product.price,
-                      product.image
-                    )
-                  }
-                >
-                  <FavoriteBorderIcon fontSize="medium" />
-                </IconButton>
-                <StyledListItem key={product.image}>
+
+      <Grid
+        item
+        xs={12}
+        style={{ display: "flex", alignItems: "center" }}
+        sx={{ paddingBottom: 2 }}
+      >
+        <Button onClick={handleScrollLeft}>&lt;</Button>
+        <StyledList ref={scrollContainerRef} sx={{ padding: 1 }}>
+          {promotions.length > 0 &&
+            promotions.map((product, i) =>
+              product.old_price && product.old_price > product.price ? (
+                <StyledListItem>
+                  {localStorage.getItem("user") ? (
+                    <IconButton
+                      sx={{ color: "red" }}
+                      onClick={() =>
+                        handleAddToWishlist(
+                          product.id,
+                          product.name,
+                          product.price,
+                          product.image
+                        )
+                      }
+                    >
+                      <FavoriteBorderIcon fontSize="medium" />
+                    </IconButton>
+                  ) : (
+                    <IconButton disabled>
+                      <FavoriteBorderIcon fontSize="medium" />
+                    </IconButton>
+                  )}
+
                   <Button href={`/product/${product.id}`}>
                     <img
                       src={`/images/products/${product.image}`}
@@ -178,60 +231,59 @@ function Home({ updateCart }) {
                       alt={`product${i + 1}`}
                     />
                   </Button>
-                </StyledListItem>
-                <StyledListItem key={product.name}>
-                  <Typography>{product.name}</Typography>
-                </StyledListItem>
-                <StyledListItem key={product.old_price}>
+
+                  <Typography variant="body1">{product.name}</Typography>
+
                   <Typography sx={{ textDecoration: "line-through" }}>
                     {product.old_price} RON
                   </Typography>
-                </StyledListItem>
-                <StyledListItem key={product.price}>
+
                   <Typography color="red" variant="h6">
                     {product.price} RON
                   </Typography>
-                </StyledListItem>
-                <StyledListItem key={product.id}>
+
                   {localStorage.getItem("user") && product.quantity > 0 ? (
-                    <Stack>
-                      <AddCartButton
-                        sx={{
-                          backgroundColor: "#537ec5",
-                          color: "white",
-                        }}
-                        onClick={() =>
-                          handleAddToCart(
-                            product.id,
-                            product.name,
-                            product.price,
-                            product.image,
-                            1,
-                            product.brand,
-                            product.product_type
-                          )
-                        }
-                      >
-                        <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
-                        {t("add_cart")}
-                      </AddCartButton>
-                    </Stack>
+                    <AddCartButton
+                      sx={{
+                        backgroundColor: "#537ec5",
+                        color: "white",
+                      }}
+                      onClick={() =>
+                        handleAddToCart(
+                          product.id,
+                          product.name,
+                          product.price,
+                          product.image,
+                          1,
+                          product.brand,
+                          product.product_type
+                        )
+                      }
+                    >
+                      <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
+                      {t("add_cart")}
+                    </AddCartButton>
                   ) : (
                     <AddCartButton
                       disabled
-                      sx={{ backgroundColor: "#537ec5", color: "white" }}
+                      sx={{
+                        backgroundColor: "#537ec5",
+                        color: "white",
+                        width: "70%",
+                      }}
                     >
                       <ShoppingCartOutlinedIcon fontSize="medium" />{" "}
                       {t("add_cart")}
                     </AddCartButton>
                   )}
                 </StyledListItem>
-              </StyledList>
-            </Grid>
-          ) : (
-            <></>
-          )
-        )}
+              ) : (
+                <></>
+              )
+            )}
+        </StyledList>
+        <Button onClick={handleScrollRight}>&gt;</Button>
+      </Grid>
     </Grid>
   );
 }

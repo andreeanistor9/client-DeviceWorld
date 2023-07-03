@@ -367,19 +367,25 @@ function Products({ updateCart }) {
               paginatedProductsPage.map((product, i) => (
                 <Grid item xs={4}>
                   <StyledList>
-                    <IconButton
-                      sx={{ color: "red" }}
-                      onClick={() =>
-                        handleAddToWishlist(
-                          product.id,
-                          product.name,
-                          product.price,
-                          product.image
-                        )
-                      }
-                    >
-                      <FavoriteBorderIcon fontSize="medium" />
-                    </IconButton>
+                    {localStorage.getItem("user") ? (
+                      <IconButton
+                        sx={{ color: "red" }}
+                        onClick={() =>
+                          handleAddToWishlist(
+                            product.id,
+                            product.name,
+                            product.price,
+                            product.image
+                          )
+                        }
+                      >
+                        <FavoriteBorderIcon fontSize="medium" />
+                      </IconButton>
+                    ) : (
+                      <IconButton disabled>
+                        <FavoriteBorderIcon fontSize="medium" />
+                      </IconButton>
+                    )}
                     <StyledListItem key={product.image}>
                       <Button href={`/product/${product.id}`}>
                         <img
@@ -575,24 +581,30 @@ function Products({ updateCart }) {
           ) : (
             filteredProducts.map((product, i) => (
               <List>
-                <IconButton
-                  sx={{ color: "red" }}
-                  onClick={() =>
-                    handleAddToWishlist(
-                      product.id,
-                      product.name,
-                      product.price,
-                      product.image
-                    )
-                  }
-                >
-                  <FavoriteBorderIcon fontSize="medium" />
-                </IconButton>
+                {localStorage.getItem("user") ? (
+                  <IconButton
+                    sx={{ color: "red" }}
+                    onClick={() =>
+                      handleAddToWishlist(
+                        product.id,
+                        product.name,
+                        product.price,
+                        product.image
+                      )
+                    }
+                  >
+                    <FavoriteBorderIcon fontSize="medium" />
+                  </IconButton>
+                ) : (
+                  <IconButton disabled>
+                    <FavoriteBorderIcon fontSize="medium" />
+                  </IconButton>
+                )}
                 <StyledListItem key={product.image}>
                   <Button href={`/product/${product.id}`}>
                     <img
                       src={`/images/products/${product.image}`}
-                      width="100%"
+                      width="70%"
                       alt={`product${i + 1}`}
                     />
                   </Button>

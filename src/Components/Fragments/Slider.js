@@ -105,7 +105,7 @@ const Slider = ({ items, cart }) => {
               <ListItem key={item.id} sx={{ flex: "0 0 33%" }}>
                 <img
                   src={`/images/products/${item.image}`}
-                  width="80%"
+                  width="100%"
                   alt={`product${i + 1}`}
                 />
               </ListItem>
