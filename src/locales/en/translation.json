@@ -87,5 +87,6 @@
   "home_description": "We are an online store specializing in electronics, offering you a vast range of innovative products and cutting-edge technologies delivered right to your doorstep. Whether you're looking for the latest smartphones, tablets, high-performance laptops or smart gadgets, we are here to fulfill your every technological desire. With our solid experience in the field and partnerships with top brands, we are dedicated to providing you with the best products, reliable services, and a seamless and enjoyable online shopping experience. Step into our digital world and discover the newest and most captivating technological innovations just a few clicks away!",
   "promotions": "This week's promotions",
   "old_price": "Old price",
-  "role": "Role"
+  "role": "Role",
+  "password_style": "Password must contain one uppercase letter, one lowercase letter, one number and one special character"
 }

@@ -119,7 +119,7 @@ function Signup() {
     <Grid container>
       <Grid item xs={1}></Grid>
       <Grid item xs={10}>
-        <Typography variant="h2" sx={{ textAlign: "center", padding: 5 }}>
+        <Typography variant="h3" sx={{ textAlign: "center", padding: 3 }}>
           {t("createAccount")}
         </Typography>
         <Typography sx={{ textAlign: "center" }}>
@@ -221,6 +221,7 @@ function Signup() {
                 }
               />
             </FormControl>
+
             <FormControl required fullWidth margin="normal">
               <InputLabel htmlFor="confirmPassword">
                 {t("confirmPassword")}
@@ -252,6 +253,9 @@ function Signup() {
                 }
               />
             </FormControl>
+            <Typography sx={{ fontSize: "12px", mb: 2 }}>
+              {t("password_style")}
+            </Typography>
             <Button
               disabled={!validationButton()}
               disableRipple

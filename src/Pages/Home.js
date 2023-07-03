@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import { Grid, Typography, Button, IconButton, Stack } from "@mui/material";
+import { Grid, Typography, Button, IconButton } from "@mui/material";
 import Slider from "../Components/Fragments/Slider";
 import { useTranslation } from "react-i18next";
 import { AddCartButton } from "../Components/StyledComponents";

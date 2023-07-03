@@ -72,13 +72,7 @@ const Footer = () => {
               sx={{ padding: 2, backgroundColor: "rgba(151, 177, 220, 0.5)" }}
             >
               <Typography variant="h6">{t("communication")}</Typography>
-              <Typography variant="body1">
-                {" "}
-                <Link href="/newsletter" underline="none" color="inherit">
-                  {" "}
-                  {t("newsletter")}
-                </Link>
-              </Typography>
+
               <Typography variant="body1">
                 <Link
                   variant="body1"
@@ -182,13 +176,7 @@ const Footer = () => {
         </Box>
         <Box sx={{ padding: 2, backgroundColor: "rgba(151, 177, 220, 0.5)" }}>
           <Typography variant="h6">{t("communication")}</Typography>
-          <Typography variant="body1">
-            {" "}
-            <Link href="/newsletter" underline="none" color="inherit">
-              {" "}
-              {t("newsletter")}
-            </Link>
-          </Typography>
+
           <Typography variant="body1">
             <Link
               variant="body1"
