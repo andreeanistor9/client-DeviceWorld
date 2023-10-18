@@ -1,4 +1,4 @@
-# server-DeviceWorld
+# client-DeviceWorld
 This is the client side of my application. I used React.js, Material UI, JavaScript and CSS to develop this part.
 
 “Device World” is a web application designed for managing electronic products across different categories. The aim of the project is to develop an intuitive and appealing platform for users, where they can purchase and view electronic products, while the administrator has access to additional functionalities for product and user management.
